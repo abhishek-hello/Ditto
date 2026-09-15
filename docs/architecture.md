@@ -16,7 +16,7 @@
 │  /v1/* → requireAuth → routes      │
 │     zod validate → HttpError → env │
 └──────────────┬─────────────────────┘
-               │ service-role client (bypasses RLS)
+               │ Drizzle ORM via SUPABASE_DB_URL (bypasses RLS)
                ▼
 ┌────────────────────────────────────┐
 │ Supabase (Postgres + Auth + RLS)   │
@@ -30,7 +30,7 @@
 Two paths to the database:
 
 1. **Reads** can go straight from a client to Supabase with the anon key; RLS limits rows to the caller's own.
-2. **Writes that move money** go through `apps/api` only. The service-role client is instantiated once in `createApp` and never leaves the server.
+2. **Writes that move money** go through `apps/api` only, via Drizzle (`createDb()` in `createApp`). The connection string never leaves the server. The anon supabase-js client in the API exists only to verify access tokens.
 
 ## Auth
 
@@ -41,16 +41,19 @@ Two paths to the database:
 
 A P2P payment must debit, credit, and record atomically. Plan:
 
-```sql
-create function public.transfer_p2p(from_wallet uuid, to_wallet uuid, amount_pence bigint, reference text)
-returns public.transactions
-language plpgsql security definer as $$ ... $$;
+```ts
+await db.transaction(async (tx) => {
+  const [a, b] = await tx.select().from(wallets)
+    .where(inArray(wallets.id, [fromId, toId].sort())).for('update');
+  if (from.balancePence < amount) throw new HttpError(422, 'insufficient_funds', …);
+  await tx.update(wallets).set({ balancePence: sql`${wallets.balancePence} - ${amount}` }).where(eq(wallets.id, fromId));
+  await tx.update(wallets).set({ balancePence: sql`${wallets.balancePence} + ${amount}` }).where(eq(wallets.id, toId));
+  return tx.insert(transactions).values({ kind: 'p2p', status: 'completed', amountPence: amount, fromWalletId, toWalletId, reference }).returning();
+});
 ```
 
-- Locks both wallet rows (`select ... for update`, ordered by id to avoid deadlocks).
-- Checks `balance_pence >= amount_pence`, raises `insufficient_funds`.
-- Updates both balances, inserts one `transactions` row with `status = 'completed'`.
-- `apps/api` calls it with `db.rpc('transfer_p2p', …)` and maps SQL errors to `HttpError` codes.
+- Lock order is by wallet id to avoid deadlocks. The `wallets_balance_non_negative` check is the last line of defence.
+- Serializable isolation is not required; row locks are sufficient for two-wallet transfers.
 
 Until this lands, `POST /v1/payments` returns `501 not_implemented`.
 
@@ -59,11 +62,13 @@ Until this lands, `POST /v1/payments` returns `501 not_implemented`.
 ```
 apps/mobile ─┐
 apps/web    ─┼─▶ @ditto/api-client ─▶ @ditto/core
-apps/api    ─┼─▶ @ditto/supabase   ─▶ (supabase-js)
+             ├─▶ @ditto/supabase   ─▶ (supabase-js)     ← auth + RLS reads
+apps/api    ─┼─▶ @ditto/db         ─▶ (drizzle-orm, postgres)  ← all writes
+             ├─▶ @ditto/supabase                          ← token verification
              └─▶ @ditto/core
 ```
 
-`@ditto/core` has no internal deps. Nothing imports from `apps/`.
+`@ditto/core` and `@ditto/db` have no internal deps. Nothing imports from `apps/`. `@ditto/db` is server-only.
 
 ## Build and deploy
 

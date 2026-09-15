@@ -35,6 +35,7 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run knip
+      - run: npm run db:check -w @ditto/db
       - run: npm run test
 
   build-web:

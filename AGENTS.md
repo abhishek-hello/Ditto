@@ -10,9 +10,10 @@ Ditto Pay: a UK-only mobile payments platform. Three deployables share code from
 | --- | --- | --- | --- |
 | `apps/mobile` | Customer app | Expo SDK 57, expo-router, React Native 0.86 | Expo dev server (8081) |
 | `apps/web` | Marketing site + account dashboard | Next.js 16 App Router, Tailwind 4 | http://localhost:3000 |
-| `apps/api` | Backend | Node 24, Express 5, Supabase (service role), zod | http://localhost:4000 |
+| `apps/api` | Backend | Node 24, Express 5, Drizzle ORM over Supabase Postgres, zod | http://localhost:4000 |
 | `packages/core` | Domain types, zod schemas, money + UK validators | TS source, no build | — |
-| `packages/supabase` | Client factories, generated DB types, migrations | TS source, no build | — |
+| `packages/db` | Drizzle schema (source of truth), migrations, `createDb()` | TS source, no build | — |
+| `packages/supabase` | supabase-js client factories + generated types (auth, RLS reads) | TS source, no build | — |
 | `packages/api-client` | Typed fetch client for `apps/api` | TS source, no build | — |
 | `packages/typescript-config` | tsconfig presets | JSON | — |
 
@@ -33,14 +34,14 @@ npm run typecheck -- --filter=@ditto/api   # scope any turbo task with --filter
 
 1. **Money is integer pence.** Type `Pence` from `@ditto/core`. Never `number` pounds, never floats, never `toFixed` for arithmetic. Format only at the UI edge with `formatPence`.
 2. **GBP only, UK only.** Do not add currency switches, i18n locales, or non-UK bank formats.
-3. **Service-role Supabase key is `apps/api` only.** Never import `createServiceClient` from web or mobile. Clients use the anon key and rely on RLS.
+3. **Database writes happen only in `apps/api`, through Drizzle.** `createDb()` from `@ditto/db` connects as `postgres` and bypasses RLS; never import it from web or mobile. Clients use supabase-js with the anon key and rely on RLS for reads.
 4. **All API input is zod-validated** with schemas from `@ditto/core/schemas`, via `validateBody`. Responses use the `ApiResponse<T>` envelope. No ad-hoc shapes.
 5. **Shared packages ship TS source.** No build step. Add new packages to `transpilePackages` in `apps/web/next.config.ts`.
 6. **One root `.env`.** Every app loads it (see `ENVIRONMENTS.md`). Every new var goes in `env.example` with no value. Public vars must be prefixed `NEXT_PUBLIC_` / `EXPO_PUBLIC_`.
-7. **Schema changes are migrations** in `packages/supabase/supabase/migrations/`, then regenerate `database.types.ts`. Never edit the generated types by hand.
+7. **Schema lives in `packages/db/src/schema.ts`.** Edit it, run `npm run db:generate -w @ditto/db`, commit the SQL under `packages/db/drizzle/`. Never hand-edit generated SQL or `database.types.ts`; triggers/functions go in a `--custom` migration.
 8. **Biome is the only linter/formatter.** Do not add ESLint or Prettier.
 9. **No new dependencies without a reason in the PR.** Prefer what is already in the tree. Third-party fixes go through `patches/`.
-10. **Don't touch `package-lock.json` by hand.** Change `package.json`, run `npm install`.
+10. **Don't touch `package-lock.json` by hand.** After any dependency change run `npm run lock:regen` (clean reinstall + `npm ci` verification). A plain `npm install` on top of an existing `node_modules` can prune optional platform packages from the lockfile, and CI's `npm ci` then fails with `Missing: @emnapi/... from lock file`.
 
 ## Conventions
 

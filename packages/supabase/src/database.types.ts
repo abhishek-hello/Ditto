@@ -2,8 +2,9 @@
  * GENERATED FILE — do not edit by hand.
  * Regenerate with:  npm run types:generate -w @ditto/supabase
  *
- * This placeholder mirrors the initial migration so the repo typechecks before
- * Supabase has been started locally.
+ * Mirrors the Drizzle schema in packages/db/src/schema.ts (the source of truth).
+ * Regenerate after `npm run db:migrate -w @ditto/db` so supabase-js clients on
+ * web/mobile get matching types.
  */
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 

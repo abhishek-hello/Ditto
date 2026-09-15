@@ -7,10 +7,11 @@ ditto-monorepo/
 ├── apps/
 │   ├── mobile/     Expo SDK 57 + expo-router      → App Store / Play Store (EAS)
 │   ├── web/        Next.js 16 App Router           → Vercel
-│   └── api/        Node 24 + Express 5 + Supabase  → container / Node host
+│   └── api/        Node 24 + Express 5 + Drizzle   → container / Node host
 ├── packages/
 │   ├── core/              domain types, zod schemas, money (pence), UK validators
-│   ├── supabase/          client factories, generated DB types, SQL migrations
+│   ├── db/                Drizzle ORM schema (source of truth), migrations, connection
+│   ├── supabase/          supabase-js client factories + generated types for RLS reads
 │   ├── api-client/        typed fetch client for apps/api (used by web + mobile)
 │   └── typescript-config/ tsconfig presets
 ├── docs/           architecture, patterns, guides
@@ -43,9 +44,9 @@ Or `./scripts/bootstrap.sh` does the first two steps and a typecheck.
 ### Local Supabase (optional, needs Docker)
 
 ```sh
-cd packages/supabase
-npx supabase start        # prints API URL + keys; paste into root .env
-npm run types:generate -w @ditto/supabase
+cd packages/supabase && npx supabase start   # prints API URL, keys, DB URL → paste into root .env
+npm run db:migrate -w @ditto/db              # apply Drizzle migrations
+npm run types:generate -w @ditto/supabase    # refresh supabase-js types for web/mobile
 ```
 
 ## Everyday commands
@@ -58,6 +59,9 @@ npm run types:generate -w @ditto/supabase
 | `npm run build` | Build every app (Next, API `dist/`); mobile builds go through EAS |
 | `npm run check:env` | Verify `.env` has every key from `env.example` and nothing else |
 | `npm run knip` | Unused files / exports / dependencies |
+| `npm run db:generate -w @ditto/db` | Diff `packages/db/src/schema.ts` → new SQL migration |
+| `npm run db:migrate -w @ditto/db` | Apply pending migrations to `SUPABASE_DB_URL` |
+| `npm run db:studio -w @ditto/db` | Drizzle Studio against your DB |
 | `npm run <task> -- --filter=@ditto/api` | Scope any Turbo task to one workspace |
 
 ## Read next

@@ -27,7 +27,8 @@
     "check": "npm run lint && npm run typecheck && npm run knip && npm run test",
     "check:env": "node scripts/check-env.mjs",
     "clean": "turbo run clean && rm -rf node_modules .turbo",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "lock:regen": "rm -rf node_modules package-lock.json && npm install && rm -rf node_modules && npm ci"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.13",

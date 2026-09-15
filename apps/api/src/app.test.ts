@@ -8,7 +8,7 @@ const env = loadEnv({
   NODE_ENV: 'test',
   SUPABASE_URL: 'http://localhost:54321',
   SUPABASE_ANON_KEY: 'anon',
-  SUPABASE_SERVICE_ROLE_KEY: 'service',
+  SUPABASE_DB_URL: 'postgresql://postgres:postgres@localhost:54322/postgres',
 });
 const app = createApp(env, createLogger('silent', false));
 
