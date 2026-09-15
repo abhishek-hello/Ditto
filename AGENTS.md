@@ -41,7 +41,7 @@ npm run typecheck -- --filter=@ditto/api   # scope any turbo task with --filter
 7. **Schema lives in `packages/db/src/schema.ts`.** Edit it, run `npm run db:generate -w @ditto/db`, commit the SQL under `packages/db/drizzle/`. Never hand-edit generated SQL or `database.types.ts`; triggers/functions go in a `--custom` migration.
 8. **Biome is the only linter/formatter.** Do not add ESLint or Prettier.
 9. **No new dependencies without a reason in the PR.** Prefer what is already in the tree. Third-party fixes go through `patches/`.
-10. **Don't touch `package-lock.json` by hand.** Change `package.json`, run `npm install`.
+10. **Don't touch `package-lock.json` by hand.** After any dependency change run `npm run lock:regen` (clean reinstall + `npm ci` verification). A plain `npm install` on top of an existing `node_modules` can prune optional platform packages from the lockfile, and CI's `npm ci` then fails with `Missing: @emnapi/... from lock file`.
 
 ## Conventions
 
