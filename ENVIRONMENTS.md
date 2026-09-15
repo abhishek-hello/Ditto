@@ -42,6 +42,7 @@ The Supabase **anon** key is public by design (RLS protects data). `SUPABASE_DB_
 | `EXPO_PUBLIC_API_URL` | mobile | on a device, use your machine's LAN IP, not `localhost` |
 | `EXPO_PUBLIC_SUPABASE_URL` | mobile | |
 | `EXPO_PUBLIC_SUPABASE_ANON_KEY` | mobile | |
+| `EXPO_PUBLIC_DEV_BYPASS_AUTH` | mobile | `1` makes every route reachable without a session (dev builds only). Leave empty otherwise |
 
 ## Stages
 
