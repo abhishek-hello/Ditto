@@ -1,27 +1,25 @@
 import { pence, type Wallet } from '@ditto/core';
-import type { DittoSupabaseClient } from '@ditto/supabase';
+import { type Db, wallets } from '@ditto/db';
+import { and, eq } from 'drizzle-orm';
 import { Router } from 'express';
 import { HttpError, ok } from '../lib/http';
 
-export function walletsRouter(db: DittoSupabaseClient) {
+export function walletsRouter(db: Db) {
   const router = Router();
 
   router.get('/wallets/me', async (req, res, next) => {
     try {
-      const { data, error } = await db
-        .from('wallets')
-        .select('id, owner_id, currency, balance_pence, created_at')
-        .eq('owner_id', req.userId ?? '')
-        .eq('currency', 'GBP')
-        .single();
-      if (error || !data) throw new HttpError(404, 'wallet_not_found', 'No GBP wallet');
+      const row = await db.query.wallets.findFirst({
+        where: and(eq(wallets.ownerId, req.userId ?? ''), eq(wallets.currency, 'GBP')),
+      });
+      if (!row) throw new HttpError(404, 'wallet_not_found', 'No GBP wallet');
 
       const wallet: Wallet = {
-        id: data.id as Wallet['id'],
-        ownerId: data.owner_id as Wallet['ownerId'],
+        id: row.id as Wallet['id'],
+        ownerId: row.ownerId as Wallet['ownerId'],
         currency: 'GBP',
-        balance: pence(Number(data.balance_pence)),
-        createdAt: data.created_at,
+        balance: pence(row.balancePence),
+        createdAt: row.createdAt,
       };
       ok(res, wallet);
     } catch (err) {

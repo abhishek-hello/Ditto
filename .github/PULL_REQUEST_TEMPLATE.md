@@ -8,4 +8,4 @@
 
 - [ ] `npm run check` passes locally
 - [ ] Env vars added to `env.example` (if any)
-- [ ] Migration added under `packages/supabase/supabase/migrations` (if schema changed) and `database.types.ts` regenerated
+- [ ] Schema change → `packages/db/src/schema.ts` edited, `db:generate` run, SQL committed, `database.types.ts` regenerated

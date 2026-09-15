@@ -20,7 +20,7 @@
 | `EXPO_PUBLIC_` | Expo app bundle | Public URLs, anon key |
 | _(none)_ | Server process only | Service-role key, JWT secret, DB URL |
 
-The Supabase **anon** key is public by design (RLS protects data). The **service-role** key bypasses RLS and must only ever be set for `apps/api`.
+The Supabase **anon** key is public by design (RLS protects data). `SUPABASE_DB_URL` and the **service-role** key bypass RLS and must only ever be set for `apps/api` and migration tooling.
 
 ## Variables
 
@@ -32,9 +32,9 @@ The Supabase **anon** key is public by design (RLS protects data). The **service
 | `API_CORS_ORIGINS` | api | comma-separated, default `http://localhost:3000` |
 | `SUPABASE_URL` | api | project URL |
 | `SUPABASE_ANON_KEY` | api | used to verify user tokens |
-| `SUPABASE_SERVICE_ROLE_KEY` | api | **secret** |
+| `SUPABASE_SERVICE_ROLE_KEY` | api (future: storage/admin auth) | **secret**, bypasses RLS |
 | `SUPABASE_JWT_SECRET` | api (future) | only if we verify JWTs locally |
-| `SUPABASE_DB_URL` | supabase CLI / scripts | direct Postgres URL, **secret** |
+| `SUPABASE_DB_URL` | api, drizzle-kit | Postgres URL used by Drizzle, **secret**, bypasses RLS. Local: `postgresql://postgres:postgres@127.0.0.1:54322/postgres`. Cloud: the *transaction pooler* URL (port 6543) |
 | `NEXT_PUBLIC_APP_URL` | web | canonical site URL |
 | `NEXT_PUBLIC_API_URL` | web | `apps/api` base URL |
 | `NEXT_PUBLIC_SUPABASE_URL` | web | same value as `SUPABASE_URL` |
@@ -58,9 +58,10 @@ Secrets for preview/production live in the host's secret manager (Vercel env, EA
 ```sh
 cd packages/supabase
 npx supabase start            # first run pulls Docker images
-npx supabase status           # shows URL, anon key, service_role key
-npx supabase db reset         # re-apply migrations + seed.sql
-npm run types:generate -w @ditto/supabase
+npx supabase status           # shows URL, anon key, service_role key, DB URL
+cd ../..
+npm run db:migrate -w @ditto/db            # apply Drizzle migrations
+npm run types:generate -w @ditto/supabase  # refresh supabase-js types
 ```
 
 Studio: http://localhost:54323

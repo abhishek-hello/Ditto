@@ -1,4 +1,5 @@
-import { createPublicClient, createServiceClient } from '@ditto/supabase';
+import { createDb, type Db } from '@ditto/db';
+import { createPublicClient } from '@ditto/supabase';
 import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
@@ -12,10 +13,17 @@ import { healthRouter } from './routes/health';
 import { paymentsRouter } from './routes/payments';
 import { walletsRouter } from './routes/wallets';
 
-export function createApp(env: Env, logger: Logger) {
+export interface AppDeps {
+  /** Injectable for tests; defaults to a real Drizzle connection. */
+  db?: Db;
+}
+
+export function createApp(env: Env, logger: Logger, deps: AppDeps = {}) {
   const app = express();
 
-  const db = createServiceClient({ url: env.SUPABASE_URL, key: env.SUPABASE_SERVICE_ROLE_KEY });
+  // Drizzle over Supabase Postgres. Bypasses RLS — server-only.
+  const db = deps.db ?? createDb({ url: env.SUPABASE_DB_URL });
+  // Anon client is used solely to verify user access tokens with Supabase Auth.
   const auth = createPublicClient({ url: env.SUPABASE_URL, key: env.SUPABASE_ANON_KEY });
 
   app.disable('x-powered-by');
@@ -35,5 +43,5 @@ export function createApp(env: Env, logger: Logger) {
   app.use((_req, res) => fail(res, 404, 'not_found', 'Route not found'));
   app.use(errorHandler(logger));
 
-  return app;
+  return Object.assign(app, { close: () => db.close() });
 }

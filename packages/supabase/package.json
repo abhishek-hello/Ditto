@@ -2,7 +2,7 @@
   "name": "@ditto/supabase",
   "version": "0.0.0",
   "private": true,
-  "description": "Supabase client factories and generated Database types. Migrations live in ./supabase/migrations.",
+  "description": "Supabase client factories (auth + RLS-scoped reads) and generated Database types for supabase-js consumers. Schema and migrations live in @ditto/db.",
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -15,7 +15,6 @@
     "types:generate": "supabase gen types typescript --local --schema public > src/database.types.ts",
     "db:start": "supabase start --workdir .",
     "db:stop": "supabase stop --workdir .",
-    "db:reset": "supabase db reset --workdir .",
     "clean": "rm -rf .turbo"
   },
   "dependencies": {
