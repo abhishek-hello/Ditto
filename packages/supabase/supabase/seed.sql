@@ -1,2 +1,0 @@
--- Local-only seed data. Runs after migrations on `supabase db reset`.
--- Nothing yet: profiles/wallets are created by the auth trigger when users sign up.

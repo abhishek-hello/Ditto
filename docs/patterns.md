@@ -30,16 +30,15 @@ mkdir -p packages/<name>/src
 - Add to `transpilePackages` in `apps/web/next.config.ts` and to `knip.json` if it needs custom entries.
 - `npm install` at root to link it.
 
-## Add a migration
+## Change the schema
 
-```sh
-cd packages/supabase
-npx supabase migration new <snake_name>
-# edit supabase/migrations/<timestamp>_<snake_name>.sql
-npx supabase db reset
-npm run types:generate -w @ditto/supabase
-```
-Commit the SQL and the regenerated `database.types.ts` together. Money columns are `bigint … _pence`.
+1. Edit `packages/db/src/schema.ts`. Money columns are `bigint('…_pence', { mode: 'number' })`. Add `pgPolicy(...)` entries for any client-readable table and keep `.enableRLS()`.
+2. `npm run db:generate -w @ditto/db` → new file under `packages/db/drizzle/`. Read the SQL; drizzle-kit is good but not infallible.
+3. Triggers / functions / data backfills: `npx drizzle-kit generate --custom --name <snake_name>` from `packages/db`, then write the SQL by hand.
+4. `npm run db:migrate -w @ditto/db` against your local DB, then `npm run types:generate -w @ditto/supabase`.
+5. Commit the schema, the SQL, `drizzle/meta/*`, and `database.types.ts` together. `npm run db:check -w @ditto/db` runs in CI to catch drifted snapshots.
+
+Query from the API with `db.query.<table>.findFirst/findMany` (relational) or `db.select().from(...)` (SQL-like). Never string-build SQL; use `sql\`...\`` tags with parameters.
 
 ## Add an env var
 

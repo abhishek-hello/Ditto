@@ -1,27 +1,50 @@
-import { type CreateP2pPayment, createP2pPaymentSchema } from '@ditto/core';
-import type { DittoSupabaseClient } from '@ditto/supabase';
+import {
+  type CreateP2pPayment,
+  createP2pPaymentSchema,
+  pence,
+  type Transaction,
+} from '@ditto/core';
+import { type Db, profiles, type TransactionRow, transactions, wallets } from '@ditto/db';
+import { desc, eq, inArray, or } from 'drizzle-orm';
 import { Router } from 'express';
 import { HttpError, ok } from '../lib/http';
 import { validateBody } from '../middleware/validate';
 
-export function paymentsRouter(db: DittoSupabaseClient) {
+function toTransaction(row: TransactionRow): Transaction {
+  return {
+    id: row.id as Transaction['id'],
+    kind: row.kind,
+    status: row.status,
+    currency: 'GBP',
+    amount: pence(row.amountPence),
+    fromWalletId: row.fromWalletId as Transaction['fromWalletId'],
+    toWalletId: row.toWalletId as Transaction['toWalletId'],
+    reference: row.reference,
+    createdAt: row.createdAt,
+  };
+}
+
+export function paymentsRouter(db: Db) {
   const router = Router();
 
   router.get('/payments', async (req, res, next) => {
     try {
-      const { data: wallets } = await db
-        .from('wallets')
-        .select('id')
-        .eq('owner_id', req.userId ?? '');
-      const ids = (wallets ?? []).map((w) => w.id);
-      const { data, error } = await db
-        .from('transactions')
-        .select('*')
-        .or(`from_wallet_id.in.(${ids.join(',')}),to_wallet_id.in.(${ids.join(',')})`)
-        .order('created_at', { ascending: false })
+      const mine = await db
+        .select({ id: wallets.id })
+        .from(wallets)
+        .where(eq(wallets.ownerId, req.userId ?? ''));
+      const ids = mine.map((w) => w.id);
+      if (ids.length === 0) {
+        ok(res, [] as Transaction[]);
+        return;
+      }
+      const rows = await db
+        .select()
+        .from(transactions)
+        .where(or(inArray(transactions.fromWalletId, ids), inArray(transactions.toWalletId, ids)))
+        .orderBy(desc(transactions.createdAt))
         .limit(50);
-      if (error) throw new HttpError(500, 'db_error', error.message);
-      ok(res, data);
+      ok(res, rows.map(toTransaction));
     } catch (err) {
       next(err);
     }
@@ -30,17 +53,16 @@ export function paymentsRouter(db: DittoSupabaseClient) {
   router.post('/payments', validateBody(createP2pPaymentSchema), async (req, _res, next) => {
     try {
       const input = req.body as CreateP2pPayment;
-      // TODO(ledger): move into a Postgres function so debit + credit + insert
-      // are one atomic transaction. See docs/architecture.md → "Ledger".
-      const { data: recipient } = await db
-        .from('profiles')
-        .select('id')
-        .eq('handle', input.toHandle)
-        .single();
+      const recipient = await db.query.profiles.findFirst({
+        columns: { id: true },
+        where: eq(profiles.handle, input.toHandle),
+      });
       if (!recipient) throw new HttpError(404, 'recipient_not_found', 'No user with that handle');
       if (recipient.id === req.userId) {
         throw new HttpError(422, 'self_payment', 'You cannot pay yourself');
       }
+      // TODO(ledger): db.transaction(async (tx) => { lock both wallets FOR UPDATE,
+      // check balance, debit, credit, insert transactions row }). See docs/architecture.md.
       throw new HttpError(501, 'not_implemented', 'P2P ledger not wired up yet');
     } catch (err) {
       next(err);
