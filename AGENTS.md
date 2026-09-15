@@ -52,6 +52,15 @@ npm run typecheck -- --filter=@ditto/api   # scope any turbo task with --filter
 - Errors in the API: throw `HttpError(status, code, message)`; the error middleware renders the envelope.
 - Commits: conventional commits (`feat(api): …`, `fix(mobile): …`, `chore: …`).
 
+## Mobile skills (Callstack agent-skills)
+
+Two skills from [callstackincubator/agent-skills](https://github.com/callstackincubator/agent-skills) are installed in `.claude/skills/` (pinned in `skills-lock.json`) for work in `apps/mobile`:
+
+- `react-native-best-practices` — FPS, TTI, re-renders, lists, memory, bundle size, animations. Read it before touching screens, lists, or animations.
+- `react-navigation` — stacks, tabs, headers, sheets, safe areas. expo-router is built on React Navigation 7, so its patterns apply to files under `apps/mobile/app/`.
+
+Claude Code loads them automatically. Other assistants: read `.claude/skills/<name>/SKILL.md` directly. Update with `npx skills@latest update -p -y`; never hand-edit the skill files.
+
 ## When you're done
 
 Run `npm run check`. If Knip reports an unused export you just added, either use it or delete it; do not add it to an ignore list.

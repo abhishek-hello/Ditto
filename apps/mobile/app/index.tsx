@@ -1,35 +1,61 @@
-import { formatPence, pence } from '@ditto/core';
-import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Redirect } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useSession } from '@/components/SessionProvider';
 import { api } from '@/lib/api';
 
-export default function HomeScreen() {
-  const [apiStatus, setApiStatus] = useState('Checking API…');
+type Bootstrap = 'loading' | 'ready' | 'failed';
 
-  useEffect(() => {
+/**
+ * Splash (Figma 1:164157): fast / slow (progress bar) / failed (Retry).
+ * Bootstraps the API + session, then redirects.
+ * TODO: route signed-in users with an unfinished onboarding stage back into (onboarding).
+ */
+export default function SplashScreen() {
+  const { status } = useSession();
+  const [bootstrap, setBootstrap] = useState<Bootstrap>('loading');
+
+  const bootstrapApp = useCallback(() => {
+    setBootstrap('loading');
     api
       .health()
-      .then((h) => setApiStatus(`API online (v${h.version})`))
-      .catch((e: unknown) =>
-        setApiStatus(`API unreachable: ${e instanceof Error ? e.message : 'failed'}`),
-      );
+      .then(() => setBootstrap('ready'))
+      .catch(() => setBootstrap('failed'));
   }, []);
+
+  useEffect(() => {
+    bootstrapApp();
+  }, [bootstrapApp]);
+
+  if (bootstrap === 'ready' && status === 'signed-in') return <Redirect href="/(tabs)/home" />;
+  if (bootstrap === 'ready' && status === 'signed-out') return <Redirect href="/(auth)/welcome" />;
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Ditto Pay</Text>
-      <Text style={styles.body}>
-        Monorepo scaffold is live. This screen renders @ditto/core from the shared packages, e.g.{' '}
-        {formatPence(pence(1250))}.
-      </Text>
-      <Text style={styles.status}>{apiStatus}</Text>
+      {bootstrap === 'failed' ? (
+        <>
+          <Text style={styles.notes}>We couldn’t reach Ditto Pay. Check your connection.</Text>
+          <Pressable style={styles.button} onPress={bootstrapApp}>
+            <Text style={styles.buttonText}>Retry</Text>
+          </Pressable>
+        </>
+      ) : (
+        <ActivityIndicator />
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 24, gap: 12 },
+  container: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24, gap: 16 },
   title: { fontSize: 32, fontWeight: '600' },
-  body: { fontSize: 16, color: '#4b5563' },
-  status: { fontSize: 14, color: '#6b7280' },
+  notes: { fontSize: 15, color: '#4b5563', textAlign: 'center' },
+  button: {
+    backgroundColor: '#111827',
+    paddingVertical: 14,
+    paddingHorizontal: 32,
+    borderRadius: 12,
+  },
+  buttonText: { color: '#ffffff', fontSize: 16, fontWeight: '600' },
 });
