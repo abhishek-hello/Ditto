@@ -1,0 +1,4 @@
+{
+  "extends": "@ditto/typescript-config/node.json",
+  "include": ["src", "vitest.config.ts", "tsup.config.ts"]
+}

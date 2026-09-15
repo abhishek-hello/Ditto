@@ -1,0 +1,4 @@
+{
+  "extends": "@ditto/typescript-config/library.json",
+  "include": ["src"]
+}

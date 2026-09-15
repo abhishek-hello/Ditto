@@ -1,0 +1,23 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "ignoreBinaries": ["supabase"],
+  "ignoreUnresolved": ["next"],
+  "workspaces": {
+    ".": {
+      "entry": ["scripts/*.mjs"],
+      "project": ["scripts/**/*.mjs"]
+    },
+    "apps/api": {
+      "ignoreDependencies": ["pino-pretty"]
+    },
+    "apps/web": {},
+    "apps/mobile": {
+      "ignoreDependencies": ["expo-splash-screen"]
+    },
+    "packages/typescript-config": {
+      "entry": [],
+      "project": []
+    },
+    "packages/*": {}
+  }
+}
