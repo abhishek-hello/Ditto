@@ -1,0 +1,10 @@
+---
+description: Ditto Pay monorepo rules (canonical source is AGENTS.md at the repo root)
+alwaysApply: true
+---
+
+Read and follow `AGENTS.md` at the repository root. It is the single source of truth for
+structure, commands, and hard rules (integer pence money, GBP/UK only, service-role key only
+in apps/api, zod-validated API input, one root .env, Biome only).
+
+Before finishing any task, run `npm run check` from the repo root and fix what it reports.

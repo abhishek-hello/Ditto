@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+:root {
+  --ditto-ink: #0b0f19;
+  --ditto-accent: #2f6fed;
+}
+
+body {
+  @apply bg-white text-[var(--ditto-ink)] antialiased;
+}

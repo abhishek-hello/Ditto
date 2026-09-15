@@ -1,0 +1,45 @@
+{
+  "name": "@ditto/mobile",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Ditto Pay mobile app (Expo, expo-router).",
+  "main": "expo-router/entry",
+  "scripts": {
+    "dev": "expo start",
+    "ios": "expo run:ios",
+    "android": "expo run:android",
+    "web": "expo start --web",
+    "prebuild": "expo prebuild",
+    "typecheck": "tsc -p tsconfig.json",
+    "clean": "rm -rf .expo .turbo expo-env.d.ts"
+  },
+  "dependencies": {
+    "@ditto/api-client": "*",
+    "@ditto/core": "*",
+    "@ditto/supabase": "*",
+    "@expo/metro-runtime": "~57.0.15",
+    "expo": "~57.0.22",
+    "expo-constants": "~57.0.18",
+    "expo-linking": "~57.0.10",
+    "expo-router": "~57.0.21",
+    "expo-secure-store": "~57.0.4",
+    "expo-splash-screen": "~57.0.9",
+    "expo-status-bar": "~57.0.1",
+    "expo-system-ui": "~57.0.4",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-native": "0.86.3",
+    "react-native-gesture-handler": "~2.32.0",
+    "react-native-reanimated": "4.5.1",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-screens": "~4.26.0",
+    "react-native-web": "~0.21.0",
+    "react-native-worklets": "0.10.1"
+  },
+  "devDependencies": {
+    "@ditto/typescript-config": "*",
+    "@types/react": "^19.2.0",
+    "dotenv": "^17.4.2",
+    "typescript": "5.9.3"
+  }
+}

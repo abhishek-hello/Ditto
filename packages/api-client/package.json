@@ -1,0 +1,22 @@
+{
+  "name": "@ditto/api-client",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Typed fetch client for apps/api, shared by web and mobile.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "clean": "rm -rf .turbo"
+  },
+  "dependencies": {
+    "@ditto/core": "*"
+  },
+  "devDependencies": {
+    "@ditto/typescript-config": "*"
+  }
+}

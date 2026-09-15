@@ -1,0 +1,9 @@
+{
+  "name": "@ditto/typescript-config",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Shared tsconfig presets for Ditto Pay workspaces.",
+  "files": [
+    "*.json"
+  ]
+}
