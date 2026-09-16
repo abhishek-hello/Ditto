@@ -12,8 +12,8 @@ How this was derived: the Figma layers are auto-named (`Container`, `Section`), 
 
 | Screen | Notes | Figma node |
 | --- | --- | --- |
-| Splash | fast, slow (progress bar), failed (Retry) | `1:164157` |
-| Welcome | "Made to get paid." → Create Account / Sign In. Includes "Not available in your region yet" bottom sheet | `1:164223` |
+| Splash | fast, slow (progress bar), failed (Retry) | `1:164157` ✅ `app/index.tsx` |
+| Welcome | "Made to get paid." → Create Account / Sign In. Includes "Not available in your region yet" bottom sheet | `1:164223` ✅ `app/(auth)/welcome.tsx` |
 
 Flow: Splash → Welcome → (Create Account → §3) or (Sign In → §2). A signed-in user skips to §7.
 
@@ -34,7 +34,7 @@ All in frame `1:165000` unless noted. Labels in Figma read "Stage 1 of 4 · Acco
 
 | Step | Screen | Notes | Figma node |
 | --- | --- | --- | --- |
-| 1 | What kind of merchant are you? | Sole Merchant / Business (coming soon) | `1:165000` |
+| 1 | What kind of merchant are you? | Sole Merchant / Business (coming soon) | `1:165000` ✅ `app/(onboarding)/create-account/merchant-type.tsx` |
 | 2 | Your legal name | first, middle (optional), last, date of birth | `1:165000` |
 | 3 | Your email | email + confirm email, mismatch error | `1:165000` |
 | 4 | Your mobile number | UK mobile validation | `1:165000` |
