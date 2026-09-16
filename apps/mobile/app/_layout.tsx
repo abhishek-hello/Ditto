@@ -1,7 +1,14 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { Appearance, Platform } from 'react-native';
 import { SessionProvider, useSession } from '@/components/SessionProvider';
 import { publicEnv } from '@/lib/env';
+import { PINNED_SCHEME } from '@/theme';
+
+// Status bar, keyboard and system alerts follow the pinned scheme too;
+// 'unspecified' hands control back to the OS. react-native-web has no
+// setColorScheme, and useTheme() already covers web.
+if (Platform.OS !== 'web') Appearance.setColorScheme(PINNED_SCHEME ?? 'unspecified');
 
 export default function RootLayout() {
   return (

@@ -23,11 +23,18 @@ const themes: Record<Theme['scheme'], Theme> = {
 };
 
 /**
- * The design language for the current colour scheme. Follows the OS setting
- * (app.config.ts sets userInterfaceStyle: 'automatic'). The Account → Theme
- * screen will add a manual override on top of this later.
+ * Dark mode is paused: the app renders light whatever the OS is set to. Set
+ * this to `null` to follow the OS again; the dark palette and every screen
+ * still support it. The root layout applies the same value to native chrome.
+ */
+export const PINNED_SCHEME: Theme['scheme'] | null = 'light';
+
+/**
+ * The design language for the current colour scheme: `PINNED_SCHEME` when
+ * set, otherwise the OS setting (app.config.ts sets userInterfaceStyle:
+ * 'automatic'). The Account → Theme screen will add a manual override later.
  */
 export function useTheme(): Theme {
-  const scheme = useColorScheme();
-  return themes[scheme === 'dark' ? 'dark' : 'light'];
+  const system = useColorScheme();
+  return themes[PINNED_SCHEME ?? (system === 'dark' ? 'dark' : 'light')];
 }
