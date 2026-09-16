@@ -55,9 +55,11 @@ Two families. **Clash Grotesk** (weights 600 and 700) for headings and the wordm
 | `h4` | 17 / 21 | 600 | | name in the account header (Clash) |
 | `amountLg` | 34 / 41 | 600 | | "£752.00" |
 | `amountMd` | 24 / 29 | 600 | | secondary amounts |
-| `body` | 15 / 20 | 400 | | input text, tagline (merges 15/18, 15/22) |
+| `body` | 15 / 20 | 400 | | input text, tagline (merges 15/18) |
+| `lead` | 15 / 22 | 400 | | subtitle under a screen heading: auth and onboarding (Figma 15/22 × 7, and 1:165000) |
 | `bodySm` | 14 / 20 | 400 | | row labels, sheet copy (merges 13.5/16, 14/21, 14.5/18) |
-| `caption` | 13 / 18 | 400 | | helper and error copy (merges 12.5/15, 13/16, 13/19) |
+| `caption` | 13 / 18 | 400 | | helper and error copy (merges 12.5/15, 13/19) |
+| `detail` | 13 / 16 | 400 | | option-card descriptions, onboarding stage label (Figma 13/16 × 8, and 1:165000) |
 | `captionSm` | 12 / 16 | 400 | | footnotes, timestamps (merges 11.5/14, 12/17, 11/13, 10.5/13) |
 | `label` | 13 / 16 | 500 | | field label above an input |
 | `labelStrong` | 13 / 16 | 600 | | links, "Show", tab label (merges 12.5/15, 13.5/16, 12/15) |

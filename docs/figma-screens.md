@@ -34,7 +34,7 @@ All in frame `1:165000` unless noted. Labels in Figma read "Stage 1 of 4 · Acco
 
 | Step | Screen | Notes | Figma node |
 | --- | --- | --- | --- |
-| 1 | What kind of merchant are you? | Sole Merchant / Business (coming soon) | `1:165000` |
+| 1 | What kind of merchant are you? | Sole Merchant / Business (coming soon) | `1:165000` ✅ `app/(onboarding)/create-account/merchant-type.tsx` |
 | 2 | Your legal name | first, middle (optional), last, date of birth | `1:165000` |
 | 3 | Your email | email + confirm email, mismatch error | `1:165000` |
 | 4 | Your mobile number | UK mobile validation | `1:165000` |

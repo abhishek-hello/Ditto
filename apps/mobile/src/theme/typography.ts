@@ -46,10 +46,14 @@ export const typography = {
   // ── Body (Inter) ──────────────────────────────────────────────────────────
   /** Input text, back chevron, tagline. */
   body: style(15, 20, '400'),
+  /** Subtitle under a screen heading: "This decides which documents we'll ask for next." */
+  lead: style(15, 22, '400'),
   /** Row labels, sheet body copy, avatar initials. */
   bodySm: style(14, 20, '400'),
   /** Captions, helper and error copy under a field. */
   caption: style(13, 18, '400'),
+  /** Option-card descriptions and the onboarding stage label. */
+  detail: style(13, 16, '400'),
   /** Footnotes: "Available in the UK", row subtitles, timestamps. */
   captionSm: style(12, 16, '400'),
 
