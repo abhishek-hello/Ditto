@@ -43,6 +43,8 @@ The Supabase **anon** key is public by design (RLS protects data). `SUPABASE_DB_
 | `EXPO_PUBLIC_SUPABASE_URL` | mobile | |
 | `EXPO_PUBLIC_SUPABASE_ANON_KEY` | mobile | |
 | `EXPO_PUBLIC_DEV_BYPASS_AUTH` | mobile | `1` makes every route reachable without a session (dev builds only). Leave empty otherwise |
+| `FIGMA_TOKEN` | `scripts/figma-tokens.mjs` | Figma personal access token (Settings → Security), scope *File content: read*. **Secret**, local only; the Figma REST API has its own quota, separate from the MCP server's |
+| `FIGMA_FILE_KEY` | `scripts/figma-tokens.mjs` | Optional. Defaults to the Ditto Pay design file |
 
 ## Stages
 

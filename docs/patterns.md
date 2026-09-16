@@ -14,6 +14,7 @@
 - Route file in `apps/mobile/app/` (expo-router). Keep it thin: layout + hooks.
 - Logic and components in `apps/mobile/src/`. Import with `@/`.
 - Data via `api` from `@/lib/api`; auth via `supabase` from `@/lib/supabase`.
+- Styling from a Figma frame: run `/figma-screen <node>` and follow `docs/guides/figma-to-screen.md`. Theme tokens from `@/theme`, no literals in screen files, light + dark both work.
 
 ## Add a web page
 

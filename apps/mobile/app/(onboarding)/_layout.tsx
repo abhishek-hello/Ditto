@@ -10,7 +10,9 @@ const STAGES: Record<string, { stage: number; label: string }> = {
 
 /** Onboarding stages 1–4. The stage header is derived from the current sub-folder. */
 export default function OnboardingLayout() {
-  const segments = useSegments();
+  // Typed as string[] so this compiles with and without the generated route types
+  // (CI has none, so useSegments() falls back to a one-element tuple there).
+  const segments: string[] = useSegments();
   const current = STAGES[segments[1] ?? ''];
 
   return (

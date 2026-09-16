@@ -28,7 +28,8 @@
     "check:env": "node scripts/check-env.mjs",
     "clean": "turbo run clean && rm -rf node_modules .turbo",
     "postinstall": "patch-package",
-    "lock:regen": "rm -rf node_modules package-lock.json && npm install && rm -rf node_modules && npm ci"
+    "lock:regen": "rm -rf node_modules package-lock.json && npm install && rm -rf node_modules && npm ci",
+    "figma": "node scripts/figma-tokens.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.13",
