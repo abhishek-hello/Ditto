@@ -13,7 +13,7 @@ How this was derived: the Figma layers are auto-named (`Container`, `Section`), 
 | Screen | Notes | Figma node |
 | --- | --- | --- |
 | Splash | fast, slow (progress bar), failed (Retry) | `1:164157` ✅ `app/index.tsx` |
-| Welcome | "Made to get paid." → Create Account / Sign In. Includes "Not available in your region yet" bottom sheet | `1:164223` |
+| Welcome | "Made to get paid." → Create Account / Sign In. Includes "Not available in your region yet" bottom sheet | `1:164223` ✅ `app/(auth)/welcome.tsx` |
 
 Flow: Splash → Welcome → (Create Account → §3) or (Sign In → §2). A signed-in user skips to §7.
 

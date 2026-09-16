@@ -21,6 +21,11 @@ export interface ThemeColors {
   textSecondary: string;
   /** Field labels, captions, section overlines, inactive tab icons. */
   textMuted: string;
+  /**
+   * Screen footnotes and disclaimers ("Available in the UK"). Identical to
+   * `textMuted` in light; one step dimmer in dark.
+   */
+  textFaint: string;
   textPlaceholder: string;
 
   /** Brand cyan: primary buttons, active tab pill, status chips, switches. */
@@ -61,6 +66,7 @@ export const lightColors: ThemeColors = {
   textPrimary: '#0a1418',
   textSecondary: '#33424a',
   textMuted: '#647178',
+  textFaint: '#647178',
   textPlaceholder: '#8a979e',
 
   primary: '#30f1fb',
@@ -94,6 +100,7 @@ export const darkColors: ThemeColors = {
   textPrimary: '#ffffff',
   textSecondary: '#c3cdd2',
   textMuted: '#8a979e',
+  textFaint: '#647178',
   // Provisional: no dark-mode placeholder text in the Figma file yet.
   textPlaceholder: '#647178',
 

@@ -10,7 +10,11 @@ export const spacing = {
   xs: 4,
   sm: 6,
   md: 8,
+  /** Welcome's Create Account → Sign In stack. Figma gaps: 10 (vertical) × 5. */
+  mdLg: 10,
   lg: 12,
+  /** Bottom-sheet content stack. Figma gaps: 14 (vertical) × 6. */
+  lgXl: 14,
   xl: 16,
   xxl: 20,
   xxxl: 24,
@@ -45,6 +49,8 @@ export const size = {
   avatar: 44,
   tabPill: 40,
   rowIcon: 38,
+  /** Info circle on a bottom sheet (Welcome "Not available in your region yet"). */
+  badge: 40,
   backButton: 34,
   chip: 24,
   tabBar: 65,

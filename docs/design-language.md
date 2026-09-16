@@ -20,6 +20,7 @@ Two palettes, chosen by the OS scheme. Auth and onboarding frames exist in both 
 | `textPrimary` | `#0a1418` | `#ffffff` | headings, input text, amounts |
 | `textSecondary` | `#33424a` | `#c3cdd2` | row labels, sheet body |
 | `textMuted` | `#647178` | `#8a979e` | field labels, captions, overlines, inactive tab icons |
+| `textFaint` | `#647178` | `#647178` | screen footnotes ("Available in the UK", 1:164246). Same as `textMuted` in light, one step dimmer in dark |
 | `textPlaceholder` | `#8a979e` | `#647178` **provisional** | empty input |
 | `primary` | `#30f1fb` | `#30f1fb` | primary button, active tab pill, avatar, status chips, switch |
 | `primaryBorder` | `#93def5` | `#8ff6fb` | 1px on a primary button |
@@ -85,6 +86,8 @@ Base unit 2. Figma gaps cluster at 6 / 8 / 12 / 14 / 16 and paddings at 13 to 16
 | --- | --- | --- |
 | `spacing.gutter` | 16 | horizontal screen padding at both 375 and 430 |
 | `spacing.sm` … `spacing.xl` | 6, 8, 12, 16 | gaps between chips, fields, cards |
+| `spacing.mdLg` | 10 | stacked full-width buttons (Welcome Create Account / Sign In) |
+| `spacing.lgXl` | 14 | bottom-sheet content stack |
 | `spacing.xxl`, `xxxl`, `huge` | 20, 24, 32 | sheet padding, section spacing |
 | `radius.md` | 12 | inputs, error box |
 | `radius.lg` | 14 | list rows, sheet buttons |
@@ -97,6 +100,7 @@ Base unit 2. Figma gaps cluster at 6 / 8 / 12 / 14 / 16 and paddings at 13 to 16
 | `size.avatar` | 44 | initials circle |
 | `size.tabPill` | 40 | active tab background (118 wide with label) |
 | `size.rowIcon` | 38 | icon circle at the start of a row |
+| `size.badge` | 40 | info circle on a bottom sheet (Welcome sheet, 1:164223) |
 | `size.backButton` | 34 | circular back chevron |
 | `size.chip` | 24 | status chips (5 / 11 padding) |
 | `size.tabBar` | 65 | tab bar height including the top hairline |
