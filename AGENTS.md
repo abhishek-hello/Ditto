@@ -61,6 +61,10 @@ Two skills from [callstackincubator/agent-skills](https://github.com/callstackin
 
 Claude Code loads them automatically. Other assistants: read `.claude/skills/<name>/SKILL.md` directly. Update with `npx skills@latest update -p -y`; never hand-edit the skill files.
 
+## Figma → screen workflow
+
+Mobile screens are styled one at a time from their Figma frame with the `/figma-screen <route> [node]` command (`.claude/commands/figma-screen.md`). It plans, stops for approval, builds, stops for device verification, then commits. Design data comes from `scripts/figma-tokens.mjs` (Figma REST API, needs `FIGMA_TOKEN`) and the gitignored `design-inbox/` folder (Figma to Code plugin exports), not the Figma MCP server. Node IDs live in `docs/figma-screens.md`; the rules (theme tokens only, every state reachable, light + dark) are in `docs/guides/figma-to-screen.md`. Other assistants: follow that guide by hand.
+
 ## When you're done
 
 Run `npm run check`. If Knip reports an unused export you just added, either use it or delete it; do not add it to an ignore list.

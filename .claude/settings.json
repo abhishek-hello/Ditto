@@ -10,7 +10,9 @@
       "Bash(npm run check:env)",
       "Bash(npx biome *)",
       "Bash(npx tsc *)",
-      "Bash(npx vitest *)"
+      "Bash(npx vitest *)",
+      "Bash(node scripts/figma-tokens.mjs *)",
+      "Bash(npm run figma *)"
     ]
   }
 }

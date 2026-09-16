@@ -40,3 +40,7 @@ packages/supabase/supabase/.temp
 .vscode/*
 !.vscode/extensions.json
 *.log
+
+# design hand-off drop zone (plugin exports, PNGs); see design-inbox/README.md
+design-inbox/*
+!design-inbox/README.md
