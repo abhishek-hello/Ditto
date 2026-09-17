@@ -44,3 +44,6 @@ packages/supabase/supabase/.temp
 # design hand-off drop zone (plugin exports, PNGs); see design-inbox/README.md
 design-inbox/*
 !design-inbox/README.md
+
+# local copy of the Figma file: npm run figma -- snapshot
+design-snapshot/
