@@ -6,7 +6,7 @@ export default function PaymentIdScreen() {
   return (
     <PlaceholderScreen
       title="Payment Detail"
-      figma="1:169470"
+      figma="63:1988"
       notes="Share Receipt (disabled until received)."
       subtitle={`id: ${id}`}
       actions={[{ label: 'Back to Transaction Logs', href: '/(tabs)/payments' }]}

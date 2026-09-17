@@ -6,7 +6,7 @@ export default function PaymentScanToPayIdScreen() {
   return (
     <PlaceholderScreen
       title="Scan to pay"
-      figma="1:160237, 1:163100"
+      figma="6:7140,6:11393"
       notes={
         'QR display, amount, trading name, Share link to pay, Cancel payment; expiring, expired ("Create a new code").'
       }

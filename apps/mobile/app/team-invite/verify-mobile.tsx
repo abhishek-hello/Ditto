@@ -5,7 +5,7 @@ export default function TeamInviteVerifyMobileScreen() {
     <PlaceholderScreen
       title="Please Verify Your Mobile Number"
       stage="Team member onboarding — 2 of 6"
-      figma="1:174285"
+      figma="145:3519"
       notes={'Recovery: "Invited by", Message merchant. Shared OTP component.'}
       actions={[{ label: 'Continue', href: '/team-invite/details' }]}
     />

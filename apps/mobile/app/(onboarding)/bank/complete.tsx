@@ -5,7 +5,7 @@ export default function BankCompleteScreen() {
     <PlaceholderScreen
       title={"You're all set"}
       stage="Bank verification — step 11 of 11"
-      figma="1:167327"
+      figma="17:1297,56:5"
       notes="A quick 60-second tour before you take your first payment."
       actions={[{ label: 'Go to Home', href: '/(tabs)/home' }]}
     />

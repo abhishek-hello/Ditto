@@ -5,7 +5,7 @@ export default function BankRewardsSetupScreen() {
     <PlaceholderScreen
       title="Automated customer rewards"
       stage="Bank verification — steps 6–10 of 11"
-      figma="1:166447"
+      figma="44:802"
       notes="Choose Points / Visits / Skip for now; programme config; summary."
       actions={[
         { label: 'Continue', href: '/(onboarding)/bank/complete' },

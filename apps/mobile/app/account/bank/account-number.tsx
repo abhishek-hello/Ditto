@@ -5,7 +5,7 @@ export default function AccountBankAccountNumberScreen() {
     <PlaceholderScreen
       title="Enter Account Number"
       stage="Change bank account — 2 of 5"
-      figma="1:172654"
+      figma="145:1869"
       actions={[{ label: 'Continue', href: '/account/bank/account-name' }]}
     />
   );

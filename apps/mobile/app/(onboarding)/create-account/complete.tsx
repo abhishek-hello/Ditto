@@ -5,7 +5,7 @@ export default function CreateAccountCompleteScreen() {
     <PlaceholderScreen
       title="Fantastic!"
       stage="Account creation — complete"
-      figma="1:165000"
+      figma="40:270"
       notes="Your account setup stage is complete. Next we will verify your identity."
       actions={[{ label: 'Verify identity', href: '/(onboarding)/identity' }]}
     />

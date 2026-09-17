@@ -5,7 +5,7 @@ export default function TeamInviteDetailsScreen() {
     <PlaceholderScreen
       title="Your Details"
       stage="Step 1 of 3"
-      figma="1:174285"
+      figma="145:3519"
       notes="Full name, email, mobile. No DOB, address or ID for team members."
       actions={[{ label: 'Continue', href: '/team-invite/password' }]}
     />

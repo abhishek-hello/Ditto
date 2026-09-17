@@ -4,7 +4,7 @@ export default function AccountInformationMobileScreen() {
   return (
     <PlaceholderScreen
       title="Change Mobile"
-      figma="1:171645"
+      figma="145:841"
       notes="New mobile → code by SMS."
       actions={[
         {

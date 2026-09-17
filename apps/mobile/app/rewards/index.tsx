@@ -4,7 +4,7 @@ export default function RewardsIndexScreen() {
   return (
     <PlaceholderScreen
       title="Customer Rewards"
-      figma="1:169470"
+      figma="63:1988,168:522"
       notes={
         'My Rewards Program: overview (accrual, reward at, max per txn), locked once customers exist, Change reward type, Turn Off. Empty state: Enable Rewards ("You haven\'t enabled rewards yet").'
       }

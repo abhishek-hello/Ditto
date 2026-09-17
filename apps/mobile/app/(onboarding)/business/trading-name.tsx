@@ -5,7 +5,7 @@ export default function BusinessTradingNameScreen() {
     <PlaceholderScreen
       title="Your trading name"
       stage="Business details — step 2 of 3"
-      figma="1:165949"
+      figma="40:151"
       notes={'Optional, live "how this looks to a paying customer" preview.'}
       actions={[{ label: 'Continue', href: '/(onboarding)/business/complete' }]}
     />

@@ -5,7 +5,7 @@ export default function ForgotPasswordIndexScreen() {
     <PlaceholderScreen
       title="Reset your password"
       stage="Step 1 of 3"
-      figma="1:164476"
+      figma="16:654"
       notes={'Enter email, "Send code".'}
       actions={[{ label: 'Send code', href: '/(auth)/forgot-password/code' }]}
     />

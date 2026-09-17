@@ -6,7 +6,7 @@ export default function AccountNotificationsIdScreen() {
   return (
     <PlaceholderScreen
       title="Notice"
-      figma="1:175746, 1:176201"
+      figma="162:28"
       notes="Email / Mobile / Bank / Address / Business Name / Password changed, Direct debit failed, Billing Notice."
       subtitle={`id: ${id}`}
     />

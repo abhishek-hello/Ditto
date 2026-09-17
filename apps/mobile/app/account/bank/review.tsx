@@ -5,7 +5,7 @@ export default function AccountBankReviewScreen() {
     <PlaceholderScreen
       title="Review & Confirm"
       stage="Change bank account — 4 of 5"
-      figma="1:172654"
+      figma="145:1869"
       actions={[{ label: 'Confirm', href: '/account/bank/verify-mobile' }]}
     />
   );

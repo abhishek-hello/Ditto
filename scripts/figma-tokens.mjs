@@ -34,7 +34,12 @@ import {
 import { resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
-const DEFAULT_FILE_KEY = 'NyZLmydPFVxa8ehyWWyB68';
+// The design was copied into a new Figma account on 17 Sep 2026; the copy
+// regenerated every node id, so the old key's ids are dead. Override with
+// FIGMA_FILE_KEY when working from a different file.
+const DEFAULT_FILE_KEY = 'Amb0j3M9kF15Lnjx5rqMeA';
+/** The canvas holding every screen. One request for this pulls the whole design. */
+const PAGE_ID = '0:1';
 const API = 'https://api.figma.com/v1';
 const out = (line) => process.stdout.write(`${line}\n`);
 
@@ -392,7 +397,8 @@ function routeFiles() {
     routes.push({
       route: `/${rel.replace(/\.tsx$/, '').replace(/(^|\/)index$/, '')}`,
       file: `apps/mobile/app/${rel}`,
-      title: source.match(/title="([^"]+)"/)?.[1] ?? null,
+      // title="..." and title={"..."} (braced wherever the copy has an apostrophe)
+      title: source.match(/title=(?:"|\{")([^"]+)(?:"|"\})/)?.[1] ?? null,
       figma: ids
         .split(',')
         .map((id) => id.trim())
@@ -403,13 +409,17 @@ function routeFiles() {
   return routes;
 }
 
-/** Every node the inventory and the route files point at, in inventory order. */
-function inventoryIds() {
-  const ids = new Set();
-  const docs = readFileSync(resolve(root, 'docs/figma-screens.md'), 'utf8');
-  for (const match of docs.matchAll(/`(\d+:\d+)`/g)) ids.add(match[1]);
-  for (const route of routeFiles()) for (const id of route.figma) ids.add(id);
-  return [...ids];
+/**
+ * Top-level frames on the page that actually hold screens, in document order.
+ *
+ * Sections are discovered from the page rather than read from a list of ids:
+ * a copy-paste into another Figma account regenerates every id, and a
+ * hand-maintained list goes stale silently the moment that happens.
+ */
+function pageSections(snapshot) {
+  const page = snapshot?.nodes?.[PAGE_ID]?.document;
+  if (!page) return [];
+  return (page.children ?? []).filter((node) => phonesIn(node).length > 0).map((node) => node.id);
 }
 
 async function download(urls, pathFor) {
@@ -496,46 +506,69 @@ function phonesIn(section) {
   return phones.sort((a, b) => a.row - b.row || a.x - b.x);
 }
 
-/** Route → Figma frames (one per state), matched by the route's title. */
+/**
+ * Route titles that are our own shorthand rather than the words in the design.
+ * Everything else matches on the route's title verbatim.
+ */
+const TITLE_ALIASES = {
+  '/(tabs)/qr': ['take payment', 'keypad'],
+  '/(onboarding)/bank/result': ["that name didn't match", 'name didn'],
+  '/(onboarding)/identity/document': ['select document type', 'passport'],
+  '/team-invite/password': ['create password', 'create a password'],
+  // The settings hub lists these rows; the screens themselves are headed differently.
+  '/account/vat': ['default vat'],
+  '/account/favourites': ['favourite payments', 'favourite payment'],
+  '/account/biometrics': ['face or fingerprint', 'fingerprint'],
+  '/account/information': ['account information'],
+  '/account/theme': ['appearance', 'theme'],
+  // "[Merchant]" is a placeholder; the design spells out a fictional trading name.
+  '/team-invite/welcome': ["'s team", 'verify your email'],
+};
+
+/** Route -> Figma frames (one per state), matched by the route's title. */
 function screenMap(snapshot) {
-  const order = inventoryIds();
-  const cache = new Map();
-  const phonesOf = (id) => {
-    if (!cache.has(id)) {
-      const doc = snapshot.nodes[id]?.document;
-      cache.set(id, doc ? phonesIn(doc) : []);
-    }
-    return cache.get(id);
-  };
-  const rank = (route) => {
-    const at = order.indexOf(route.figma[0]);
-    return at === -1 ? order.length : at;
-  };
+  const sections = pageSections(snapshot);
+  const order = new Map(sections.map((id, at) => [id, at]));
+  const page = snapshot.nodes[PAGE_ID].document;
+  const all = sections.flatMap((section) => {
+    const doc = page.children.find((c) => c.id === section);
+    return phonesIn(doc).map((phone) => ({ ...phone, section }));
+  });
   const brief = ({ id, section, label, headline }) => ({ id, section, label, headline });
 
   return routeFiles()
-    .filter((route) => route.figma.length > 0)
-    .sort((a, b) => rank(a) - rank(b) || a.route.localeCompare(b.route))
     .map((route) => {
-      const candidates = route.figma.flatMap((section) =>
-        phonesOf(section).map((phone) => ({ ...phone, section })),
-      );
-      const want = route.title ? norm(route.title) : null;
-      const exact = want ? candidates.filter((p) => p.texts.includes(want)) : [];
-      const loose = want ? candidates.filter((p) => p.texts.some((t) => t.includes(want))) : [];
-      const frames = (exact.length > 0 ? exact : loose).map(brief);
+      const wants = [
+        ...(route.title ? [norm(route.title)] : []),
+        ...(TITLE_ALIASES[route.route] ?? []),
+      ];
+      // A screen whose *headline* is the title beats one that merely lists it:
+      // the Account menu contains the words "Change Email", the screen owns them.
+      const score = (p) => {
+        const head = norm(p.headline);
+        if (wants.some((w) => head === w)) return 3;
+        if (wants.some((w) => head.includes(w))) return 2;
+        if (wants.some((w) => p.texts.includes(w))) return 1;
+        if (wants.some((w) => p.texts.some((t) => t.includes(w)))) return 0;
+        return -1;
+      };
+      const scored = all.map((p) => [score(p), p]).filter(([at]) => at >= 0);
+      const best = Math.max(-1, ...scored.map(([at]) => at));
+      const frames = scored.filter(([at]) => at === best).map(([, p]) => brief(p));
+      const found = [...new Set(frames.map((f) => f.section))];
       return {
         route: route.route,
         file: route.file,
         title: route.title,
         status: route.done ? 'done' : 'todo',
-        sections: route.figma,
-        renders: route.figma.map((id) => `design-snapshot/renders/${slug(id)}.png`),
+        sections: found,
+        renders: found.map((id) => `design-snapshot/renders/${slug(id)}.png`),
         frames,
-        // Nothing matched the title: every screen in its sections, to pick by hand.
-        candidates: frames.length === 0 ? candidates.map(brief) : undefined,
+        rank: Math.min(...found.map((id) => order.get(id) ?? sections.length), sections.length),
       };
-    });
+    })
+    .sort((a, b) => a.rank - b.rank || a.route.localeCompare(b.route))
+    .map(({ rank, ...rest }) => rest);
 }
 
 function writeScreens(snapshot) {
@@ -546,13 +579,13 @@ function writeScreens(snapshot) {
     const frames =
       s.frames.length > 0
         ? s.frames.map((f) => `${f.id} ${f.label || '(no label)'}`).join(' | ')
-        : `not matched in ${s.sections.join(', ')}`;
-    out(`  ${s.status}  ${s.route.padEnd(46)} ${frames}`);
+        : 'no frame matched its title';
+    out(`  ${s.status}  ${s.route.padEnd(46)} ${frames.slice(0, 110)}`);
   }
   const todo = map.filter((s) => s.status === 'todo');
   const unmatched = map.filter((s) => s.frames.length === 0).length;
   out(
-    `\n${map.length} routes: ${map.length - todo.length} done, ${todo.length} to do, ${unmatched} not matched to a frame (see "candidates").`,
+    `\n${map.length} routes: ${map.length - todo.length} done, ${todo.length} to do, ${unmatched} with no frame matched.`,
   );
   if (todo[0]) out(`Next: ${todo[0].route}`);
 }
@@ -561,7 +594,7 @@ async function cmdSnapshot(ids, flags) {
   for (const dir of ['renders', 'icons', 'fills']) mkdirSync(snap(dir), { recursive: true });
   const refresh = ids.length > 0;
   const force = Boolean(flags.force) || refresh;
-  const requested = refresh ? ids.map(normId) : inventoryIds();
+  const requested = refresh ? ids.map(normId) : [PAGE_ID];
   let snapshot = readSnapshot();
 
   const missing = requested.filter((id) => force || !snapshot || !(id in snapshot.nodes));
@@ -576,10 +609,14 @@ async function cmdSnapshot(ids, flags) {
     };
     writeFileSync(snap('nodes.json'), JSON.stringify(snapshot));
   }
-  const sections = requested.filter((id) => snapshot.nodes[id]?.document);
   for (const id of requested) {
     if (!snapshot.nodes[id]?.document) console.error(`✗ ${id} is not in the Figma file`);
   }
+  // Render the sections, not the page: one 1920x7000 render is unreadable.
+  const sections = refresh
+    ? requested.filter((id) => snapshot.nodes[id]?.document)
+    : pageSections(snapshot);
+  out(`${sections.length} section(s) with screens in them`);
 
   const scale = flags.scale ?? 1;
   await renderMissing(sections, {
