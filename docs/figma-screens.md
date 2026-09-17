@@ -1,6 +1,20 @@
 # Figma screen inventory — Ditto Pay mobile
 
-Source: https://www.figma.com/design/NyZLmydPFVxa8ehyWWyB68/Untitled (page `0:1`, "Page 1").
+Source: the Figma file in `FIGMA_FILE_KEY` (page `0:1`).
+
+> **The `Figma node` column below is historical.** The design was moved to a new
+> Figma account on 17 Sep 2026; both the copy-paste and the `.fig` import
+> regenerated every node id, so the `1:16xxxx` ids in this table are dead.
+> Nothing reads them any more. The live route → frame mapping is generated:
+>
+> ```sh
+> npm run figma -- snapshot     # once, pulls the page into design-snapshot/
+> npm run figma -- screens      # route → frames per state, and the next screen to do
+> ```
+>
+> `design-snapshot/screens.json` is the source of truth, and the `figma=` pin in
+> each route stub is regenerated from it. Sections are discovered from the page,
+> so the next account move costs one `snapshot`, not a manual remap.
 
 Purpose: the list of screens and how they connect, so expo-router routes can be laid out in `apps/mobile/app/`. Visual detail is intentionally left out; implement screens one at a time by opening the Figma node ID listed next to each entry with `get_design_context` / `get_screenshot`.
 

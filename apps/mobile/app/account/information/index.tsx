@@ -4,7 +4,7 @@ export default function AccountInformationIndexScreen() {
   return (
     <PlaceholderScreen
       title="My Account Information"
-      figma="1:170876"
+      figma="145:28,145:4033,168:522"
       notes="Date of birth is verified and not viewable. Every change goes through re-authentication first."
       actions={[
         { label: 'Change Name', href: '/account/information/name' },

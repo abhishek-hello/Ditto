@@ -4,7 +4,7 @@ export default function SignInScreen() {
   return (
     <PlaceholderScreen
       title="Sign In"
-      figma="1:164310"
+      figma="16:304"
       notes="Email + password. States: empty, filled, wrong credentials, locked (15 min)."
       actions={[
         { label: 'Forgot password?', href: '/(auth)/forgot-password' },

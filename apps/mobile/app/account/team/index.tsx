@@ -4,7 +4,7 @@ export default function AccountTeamIndexScreen() {
   return (
     <PlaceholderScreen
       title="Manage Team Members"
-      figma="1:173070"
+      figma="145:2272"
       notes="List of members."
       actions={[
         { label: 'Invite Team Member', href: '/account/team/invite' },

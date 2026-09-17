@@ -5,7 +5,7 @@ export default function BankResultScreen() {
     <PlaceholderScreen
       title="Bank link result"
       stage="Bank verification — steps 2–3 of 11"
-      figma="1:166357, 1:166295"
+      figma="40:567"
       notes="Verifying / success / name mismatch / near-match manual review (reference BL-…). Options: Try a different bank account, Talk to support, Finish this later."
       actions={[
         { label: 'Continue', href: '/(onboarding)/bank/terms' },

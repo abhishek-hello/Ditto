@@ -5,7 +5,7 @@ export default function TeamInviteTermsScreen() {
     <PlaceholderScreen
       title="Team Member Terms"
       stage="Step 3 of 3"
-      figma="1:174285"
+      figma="145:3519"
       notes="Scroll-gated I Accept."
       actions={[{ label: 'I Accept', href: '/team-invite/complete' }]}
     />

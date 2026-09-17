@@ -4,7 +4,7 @@ export default function RewardsTurnOffScreen() {
   return (
     <PlaceholderScreen
       title="Turning Off Rewards Will Delete Points"
-      figma="1:175746, 1:169470"
+      figma="162:28"
       notes="Type DISABLE to confirm."
     />
   );

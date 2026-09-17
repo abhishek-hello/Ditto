@@ -4,7 +4,7 @@ export default function AccountScreen() {
   return (
     <PlaceholderScreen
       title="Account"
-      figma="1:170876"
+      figma="40:310,56:5,145:28,145:841,145:1869,145:4033,168:522"
       notes={
         'Sections: Merchant Account, Payment settings, Security. Team member variant shows a reduced "TEAM Account" menu (no bank, fees, team management).'
       }

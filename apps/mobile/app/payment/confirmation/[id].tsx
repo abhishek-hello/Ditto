@@ -6,7 +6,7 @@ export default function PaymentConfirmationIdScreen() {
   return (
     <PlaceholderScreen
       title="Payment Confirmation"
-      figma="1:169470"
+      figma="63:1988"
       notes="Received, share receipt, Done."
       subtitle={`id: ${id}`}
       actions={[

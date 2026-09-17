@@ -4,7 +4,7 @@ export default function IdentityIndexScreen() {
   return (
     <PlaceholderScreen
       title="Verify Your Identity"
-      figma="1:175312"
+      figma="145:5155"
       notes="Intro, choose Passport / Driving Licence."
       actions={[
         { label: 'Passport', href: '/(onboarding)/identity/document' },

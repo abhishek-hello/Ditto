@@ -4,7 +4,7 @@ export default function IdentityVerifiedScreen() {
   return (
     <PlaceholderScreen
       title="Identity Verified"
-      figma="1:175312"
+      figma="145:5155"
       notes="Success."
       actions={[{ label: 'Continue', href: '/(onboarding)/business/profession' }]}
     />
