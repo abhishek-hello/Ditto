@@ -28,6 +28,8 @@ The node is optional when the route maps to exactly one row in the inventory; th
 
 The Figma MCP server is **not used**: the Starter plan allows 20 calls a month for the whole workspace and they are gone. Two free routes replace it, and the command reads both.
 
+**Local snapshot — the default.** The REST quota is a handful of requests a month, so the design is pulled once: `npm run figma -- snapshot` saves node data and a render of every inventory section in `design-snapshot/` (gitignored) in about three requests. `--assets` adds icons and image fills; `snapshot <ids>` refreshes nodes that changed. After that, `npm run figma -- screens` maps every route to its frames and states and names the next screen to do, and `extract` / `export --svg` read the local copy without calling the API. Batch screens by flow: `/figma-screen "§3 steps 2–7"`.
+
 **1. REST script — exact values by node ID.** Needs a personal access token in `.env` as `FIGMA_TOKEN` (Figma → Settings → Security → Personal access tokens, scope *File content: read*). The REST API has its own quota, separate from the MCP server's.
 
 ```

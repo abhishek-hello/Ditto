@@ -63,7 +63,7 @@ Claude Code loads them automatically. Other assistants: read `.claude/skills/<na
 
 ## Figma → screen workflow
 
-Mobile screens are styled one at a time from their Figma frame with the `/figma-screen <route> [node]` command (`.claude/commands/figma-screen.md`). It plans, stops for approval, builds, stops for device verification, then commits. Design data comes from `scripts/figma-tokens.mjs` (Figma REST API, needs `FIGMA_TOKEN`) and the gitignored `design-inbox/` folder (Figma to Code plugin exports), not the Figma MCP server. Node IDs live in `docs/figma-screens.md`; the rules (theme tokens only, every state reachable, light + dark) are in `docs/guides/figma-to-screen.md`. Other assistants: follow that guide by hand.
+Mobile screens are styled one route or one batch at a time with the `/figma-screen <route(s) | section>` command (`.claude/commands/figma-screen.md`). It plans, stops for approval, builds, stops for device verification, then commits. Design data comes from a local snapshot of the Figma file (`npm run figma -- snapshot` once, needs `FIGMA_TOKEN`; then `npm run figma -- screens` maps routes to frames and `extract` reads the copy offline) and the gitignored `design-inbox/` folder (Figma to Code plugin exports), not the Figma MCP server. Node IDs live in `docs/figma-screens.md`; the rules (theme tokens only, every state reachable, light + dark) are in `docs/guides/figma-to-screen.md`. Other assistants: follow that guide by hand.
 
 ## When you're done
 
