@@ -1,33 +1,39 @@
 import { Image, type ImageStyle, type StyleProp } from 'react-native';
-import { useTheme } from '@/theme';
-import logoDark from '../../assets/brand/logo-dark.png';
-import logoLight from '../../assets/brand/logo-light.png';
+import logoInline from '../../assets/brand/logo-inline.png';
+import logoStacked from '../../assets/brand/logo-stacked.png';
 
-/** Figma export size (nodes 1:164166 / 1:164182) at 1x. */
-const LOGO_WIDTH = 247;
-const LOGO_HEIGHT = 139;
+/** Intrinsic pixel sizes of the two handoff exports, used to keep the ratio. */
+const LOCKUPS = {
+  /** Splash. Drawn 186 wide in the handoff. */
+  stacked: { source: logoStacked, width: 891, height: 560, defaultWidth: 186 },
+  /** Welcome. Drawn 236 wide in the handoff. */
+  inline: { source: logoInline, width: 1351, height: 299, defaultWidth: 236 },
+} as const;
 
 export interface BrandLogoProps {
-  /** Rendered width; height keeps the 247:139 ratio. Defaults to the Figma size. */
+  /** `stacked` is the splash mark, `inline` the Welcome wordmark. */
+  variant?: keyof typeof LOCKUPS;
+  /** Rendered width; height follows the export's ratio. */
   width?: number;
   style?: StyleProp<ImageStyle>;
 }
 
 /**
- * The "dittopay" lockup. Two raster exports from Figma, one per colour scheme,
- * each with its background baked in — they only sit cleanly on `background`.
- * Replace with an SVG once the designer supplies one (docs/design-language.md).
+ * The DittoPay lockup. Both exports are transparent PNGs from the Claude Design
+ * handoff, drawn in the dark brand ink — they read on `background` in light mode
+ * only. A dark-mode pair has to land alongside the dark palette.
  */
-export function BrandLogo({ width = LOGO_WIDTH, style }: BrandLogoProps) {
-  const { scheme } = useTheme();
-  const height = Math.round((width * LOGO_HEIGHT) / LOGO_WIDTH);
+export function BrandLogo({ variant = 'inline', width, style }: BrandLogoProps) {
+  const lockup = LOCKUPS[variant];
+  const renderedWidth = width ?? lockup.defaultWidth;
+  const height = Math.round((renderedWidth * lockup.height) / lockup.width);
 
   return (
     <Image
-      source={scheme === 'dark' ? logoDark : logoLight}
+      source={lockup.source}
       accessibilityRole="image"
-      accessibilityLabel="dittopay"
-      style={[{ width, height }, style]}
+      accessibilityLabel="DittoPay"
+      style={[{ width: renderedWidth, height }, style]}
       resizeMode="contain"
     />
   );

@@ -24,7 +24,8 @@ export interface BottomSheetProps {
 
 /**
  * Bottom sheet: scrim, grabber, rounded top corners. Geometry comes from the
- * theme (Figma 1:164223 — sheet padding 20/18/22, content gap 14, grabber 36x4).
+ * theme (handoff: 26pt top corners, 24 gutter, 14 top / 38 bottom padding,
+ * content gap 14, grabber 44x5).
  *
  * Children are stacked with `spacing.lgXl`; the sheet supplies its own padding
  * and safe-area inset. Dismissal is scrim tap, Android back, or a child calling
@@ -100,11 +101,12 @@ export function BottomSheet({ visible, onClose, accessibilityLabel, children }: 
             styles.sheet,
             shadow.sheet,
             {
+              shadowColor: colors.ambientShadow,
               backgroundColor: colors.surfaceRaised,
               borderTopLeftRadius: radius.sheet,
               borderTopRightRadius: radius.sheet,
-              paddingTop: spacing.xxl,
-              paddingHorizontal: spacing.xl,
+              paddingTop: spacing.lgXl,
+              paddingHorizontal: spacing.gutter,
               paddingBottom: insets.bottom + spacing.xxl,
               gap: spacing.lgXl,
             },
@@ -119,7 +121,7 @@ export function BottomSheet({ visible, onClose, accessibilityLabel, children }: 
                 height: size.sheetHandle.height,
                 borderRadius: radius.pill,
                 backgroundColor: colors.handle,
-                marginBottom: spacing.xs,
+                marginBottom: spacing.mdLg,
               },
             ]}
           />

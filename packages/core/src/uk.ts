@@ -36,3 +36,29 @@ export function formatSortCode(sortCode: string): string {
   if (!s) throw new TypeError(`Invalid sort code: ${sortCode}`);
   return `${s.slice(0, 2)}-${s.slice(2, 4)}-${s.slice(4, 6)}`;
 }
+
+/**
+ * UK-ordered date of birth, `DD/MM/YYYY`, with any spacing around the slashes.
+ * Returns null when the text is not that shape or the date does not exist
+ * (31/02/1990 rolls over in `Date`, so the day is checked back).
+ */
+export function parseUkDate(input: string): Date | null {
+  const match = /^\s*(\d{2})\s*\/\s*(\d{2})\s*\/\s*(\d{4})\s*$/.exec(input);
+  if (!match) return null;
+  const day = Number(match[1]);
+  const month = Number(match[2]);
+  const year = Number(match[3]);
+  const date = new Date(year, month - 1, day);
+  const real =
+    date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+  return real ? date : null;
+}
+
+/** Whole years elapsed since `date`. */
+export function ageInYears(date: Date, now: Date = new Date()): number {
+  const age = now.getFullYear() - date.getFullYear();
+  const beforeBirthday =
+    now.getMonth() < date.getMonth() ||
+    (now.getMonth() === date.getMonth() && now.getDate() < date.getDate());
+  return beforeBirthday ? age - 1 : age;
+}

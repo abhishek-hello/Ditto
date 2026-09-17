@@ -1,25 +1,27 @@
 import { Pressable, type StyleProp, StyleSheet, Text, type ViewStyle } from 'react-native';
 import { useTheme } from '@/theme';
 
-type ButtonVariant = 'primary' | 'secondary' | 'outline';
-type ButtonSize = 'lg' | 'md' | 'sm';
+type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'inverse' | 'plain';
+type ButtonSize = 'lg' | 'md' | 'sm' | 'xs';
 
 export interface ButtonProps {
   label: string;
   onPress?: () => void;
   /**
-   * primary — cyan fill (Sign In, Create Account).
-   * secondary — neutral outline, primary text (Welcome "Sign In", sheet "Got it").
-   * outline — cyan outline and label (splash "Retry").
+   * primary — brand fill with a cyan glow (every screen CTA).
+   * secondary — white fill, hairline outline ("Sign In", "Got it", "Try again").
+   * outline — transparent with a brand outline and label (splash "Retry").
+   * inverse — near-black fill ("Apply", "Pay & Activate Account").
+   * plain — no chrome; a text button that still wants a button's height.
    */
   variant?: ButtonVariant;
-  /** lg 56 (full-width CTA), md 48 (sheet / inline CTA), sm 44 (inline). */
+  /** lg 56 (screen CTA), md 54 (sheet CTA), sm 52 (inline), xs 46 (splash Retry). */
   size?: ButtonSize;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
-/** Design-system button. Geometry and colours come from Figma via the theme. */
+/** Design-system button. Geometry and colour come from the handoff via the theme. */
 export function Button({
   label,
   onPress,
@@ -28,37 +30,57 @@ export function Button({
   disabled = false,
   style,
 }: ButtonProps) {
-  const { colors, radius, size: sizes, spacing, text, border } = useTheme();
+  const { border, colors, radius, size: sizes, shadow, spacing, text } = useTheme();
 
   const geometry = {
     lg: { height: sizes.button, borderRadius: radius.xl, textStyle: text.button },
-    md: { height: sizes.buttonSm, borderRadius: radius.lg, textStyle: text.buttonSm },
-    sm: { height: sizes.buttonXs, borderRadius: radius.md, textStyle: text.buttonXs },
+    md: { height: sizes.buttonMd, borderRadius: radius.xl, textStyle: text.buttonMd },
+    sm: { height: sizes.buttonSm, borderRadius: radius.lg, textStyle: text.buttonSm },
+    xs: { height: sizes.buttonXs, borderRadius: radius.lg, textStyle: text.buttonXs },
   }[size];
 
   const palette = disabled
     ? {
         backgroundColor: colors.buttonDisabled,
         borderColor: colors.buttonDisabled,
+        borderWidth: border.hairline,
         color: colors.onButtonDisabled,
       }
     : {
         primary: {
           backgroundColor: colors.primary,
-          borderColor: colors.primaryBorder,
+          borderColor: colors.primary,
+          borderWidth: border.hairline,
           color: colors.onPrimary,
         },
         secondary: {
-          backgroundColor: 'transparent',
+          backgroundColor: colors.surface,
           borderColor: colors.borderStrong,
+          borderWidth: border.hairline,
           color: colors.textPrimary,
         },
         outline: {
           backgroundColor: 'transparent',
           borderColor: colors.primaryBorder,
+          borderWidth: border.strong,
           color: colors.link,
         },
+        inverse: {
+          backgroundColor: colors.inverse,
+          borderColor: colors.inverse,
+          borderWidth: border.hairline,
+          color: colors.onInverse,
+        },
+        plain: {
+          backgroundColor: 'transparent',
+          borderColor: 'transparent',
+          borderWidth: 0,
+          color: colors.textPrimary,
+        },
       }[variant];
+
+  // Only the enabled primary fill carries the brand glow.
+  const glow = !disabled && variant === 'primary';
 
   return (
     <Pressable
@@ -71,12 +93,13 @@ export function Button({
         {
           height: geometry.height,
           borderRadius: geometry.borderRadius,
-          borderWidth: border.hairline,
-          paddingHorizontal: spacing.xxxl,
+          borderWidth: palette.borderWidth,
+          paddingHorizontal: spacing.huge,
           backgroundColor: palette.backgroundColor,
           borderColor: palette.borderColor,
           opacity: pressed ? 0.85 : 1,
         },
+        glow ? { ...shadow.primary, shadowColor: colors.primaryShadow } : null,
         style,
       ]}
     >

@@ -23,9 +23,10 @@ const themes: Record<Theme['scheme'], Theme> = {
 };
 
 /**
- * Dark mode is paused: the app renders light whatever the OS is set to. Set
- * this to `null` to follow the OS again; the dark palette and every screen
- * still support it. The root layout applies the same value to native chrome.
+ * Dark mode is paused. The Claude Design handoff is light-only, so `darkColors`
+ * is a placeholder copy of light (see ./colors.ts) and this pin is what keeps it
+ * off screen. Set to `null` to follow the OS again — but only once the dark
+ * palette is real. The root layout applies the same value to native chrome.
  */
 export const PINNED_SCHEME: Theme['scheme'] | null = 'light';
 

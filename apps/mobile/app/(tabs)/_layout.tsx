@@ -18,7 +18,7 @@ export default function TabsLayout() {
         },
         tabBarActiveTintColor: colors.onPrimary,
         tabBarInactiveTintColor: colors.textMuted,
-        tabBarLabelStyle: text.labelStrong,
+        tabBarLabelStyle: text.link,
         sceneStyle: { backgroundColor: colors.background },
       }}
     >

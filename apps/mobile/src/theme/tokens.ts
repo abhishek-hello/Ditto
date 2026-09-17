@@ -1,83 +1,121 @@
 /**
  * Mode-independent tokens: spacing, radii, fixed sizes, borders, shadows.
- * Values come from the Figma frames listed in docs/design-language.md.
+ * Values come from `DittoPay Light.dc.html` in the Claude Design handoff.
  */
 import type { ViewStyle } from 'react-native';
 
-/** 2px base. Figma gaps cluster at 6 / 8 / 12 / 14 / 16; paddings at 13–16 and 19. */
+/** 2px base. The handoff's gaps cluster at 6 / 8 / 10 / 12 / 14 / 18 / 20 / 22 / 24. */
 export const spacing = {
   xxs: 2,
   xs: 4,
   sm: 6,
   md: 8,
-  /** Welcome's Create Account → Sign In stack. Figma gaps: 10 (vertical) × 5. */
+  /** Button stacks, cell gaps, sheet grid. */
   mdLg: 10,
   lg: 12,
-  /** Bottom-sheet content stack. Figma gaps: 14 (vertical) × 6. */
+  /** Sheet content stack, option-card icon gap. */
   lgXl: 14,
   xl: 16,
+  /** Gap between form fields on a scrolling screen. */
+  xlXxl: 18,
   xxl: 20,
+  /** Heading → first field. */
+  xxlXxxl: 22,
   xxxl: 24,
-  huge: 32,
-  /** Horizontal screen gutter. Every frame uses 16 at 375 and 430. */
-  gutter: 16,
+  huge: 26,
+  /** Splash logo → progress bar. */
+  giant: 34,
+  /** Horizontal screen gutter. Every frame uses 24. */
+  gutter: 24,
 } as const;
 
 export const radius = {
-  /** Annotation chips. */
-  xs: 5,
-  /** Inputs, error box, small cards. */
+  /** Checkbox. */
+  xs: 7,
+  /** Time badge on the video poster. */
+  sm: 8,
+  /** Account-number cell. */
+  smMd: 11,
+  /** OTP / sort-code cell, "Attempt 2 of 3" chip. */
   md: 12,
-  /** List rows, sheet buttons. */
+  /** Inputs, selects, list rows, notes, summary panels. */
   lg: 14,
-  /** Primary / secondary buttons, home action tiles. */
+  /** Buttons, cards, option cards. */
   xl: 16,
-  /** Stat cards ("Payments received last 7 days"). */
+  /** Trading-name preview card, video poster. */
   xxl: 18,
   /** Bottom-sheet top corners. */
-  sheet: 20,
-  /** Chips, avatars, tab pills, icon circles. */
+  sheet: 26,
+  /** Chips, avatars, icon circles, progress segments. */
   pill: 999,
 } as const;
 
 export const size = {
+  /** Full-width CTA. */
   button: 56,
-  buttonSm: 48,
+  /** Sheet CTA, secondary action under a status screen. */
+  buttonMd: 54,
+  /** "Watch later", "Apply", card inputs. */
+  buttonSm: 52,
   /** Inline outlined button: splash "Retry". */
-  buttonXs: 44,
-  input: 52,
-  avatar: 44,
-  tabPill: 40,
-  rowIcon: 38,
-  /** Info circle on a bottom sheet (Welcome "Not available in your region yet"). */
-  badge: 40,
-  backButton: 34,
-  chip: 24,
-  tabBar: 65,
-  sheetHandle: { width: 36, height: 4 },
+  buttonXs: 46,
+  input: 56,
+  /** Set-up fee card fields. */
+  inputSm: 52,
+  backButton: 42,
+  /** OTP cell. */
+  codeCell: { width: 48, height: 58 },
+  /** Sort-code cell (flexes to fill). */
+  sortCell: 58,
+  /** Account-number cell (flexes to fill). */
+  accountCell: 54,
+  checkbox: 24,
+  radio: 26,
+  /** Tick beside a password rule. */
+  ruleDot: 22,
+  /** Success / error circle on a status screen. */
+  statusCircle: 82,
+  /** Smaller status circle, inside the payment states. */
+  statusCircleSm: 64,
+  /** Icon tile on a reward card, info circle on a sheet. */
+  iconTile: 46,
+  /** Video play button. */
+  playButton: 64,
+  sheetHandle: { width: 44, height: 5 },
+  /** Stage progress segment. */
+  progressSegment: 5,
+  /** Sub-step progress segment (reset flow, terms read-through). */
+  progressSegmentSm: 4,
   icon: 20,
   iconSm: 16,
 } as const;
 
 export const border = {
   hairline: 1,
-  /** Stroke width used by the line icons in the file (~1.6). */
-  icon: 1.6,
+  /** Selected cards, focused cells, checkboxes — the handoff draws these at 1.5. */
+  strong: 1.5,
 } as const;
 
 export const shadow = {
+  /** Brand glow under an enabled primary button: 0 6px 18px. */
+  primary: {
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 1,
+    shadowRadius: 18,
+    elevation: 6,
+  },
+  /** Sticky footer above a scrolling form: 0 -6px 18px at 5%. */
+  footer: {
+    shadowOffset: { width: 0, height: -6 },
+    shadowOpacity: 0.05,
+    shadowRadius: 18,
+    elevation: 8,
+  },
+  /** Bottom sheet: 0 -10px 40px at 18%. */
   sheet: {
-    shadowColor: '#0a1418',
-    shadowOffset: { width: 0, height: -8 },
-    shadowOpacity: 0.12,
-    shadowRadius: 24,
+    shadowOffset: { width: 0, height: -10 },
+    shadowOpacity: 0.18,
+    shadowRadius: 40,
     elevation: 12,
   },
-  modal: {
-    shadowColor: '#0a1418',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.18,
-    shadowRadius: 32,
-    elevation: 16,
-  },
-} as const satisfies Record<string, ViewStyle>;
+} as const satisfies Record<string, Omit<ViewStyle, 'shadowColor'>>;

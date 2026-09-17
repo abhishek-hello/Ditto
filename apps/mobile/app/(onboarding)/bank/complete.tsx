@@ -1,13 +1,24 @@
-import { PlaceholderScreen } from '@/components/PlaceholderScreen';
+import { useRouter } from 'expo-router';
+import { Button } from '@/components/Button';
+import { StatusScreen } from '@/components/StatusScreen';
 
+/**
+ * The end of onboarding. From here the merchant lands in the app proper, so
+ * this replaces rather than pushes — the whole onboarding stack goes away.
+ */
 export default function BankCompleteScreen() {
+  const router = useRouter();
+
   return (
-    <PlaceholderScreen
-      title={"You're all set"}
-      stage="Bank verification — step 11 of 11"
-      figma="1:167327"
-      notes="A quick 60-second tour before you take your first payment."
-      actions={[{ label: 'Go to Home', href: '/(tabs)/home' }]}
-    />
+    <StatusScreen
+      title="Bank account linked"
+      body="Setup is complete — you're ready to take your first payment."
+    >
+      <Button
+        label="Take me to DittoPay"
+        onPress={() => router.replace('/(tabs)/home')}
+        style={{ alignSelf: 'stretch' }}
+      />
+    </StatusScreen>
   );
 }

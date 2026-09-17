@@ -72,7 +72,7 @@ export function PlaceholderScreen({
               key={node}
               onPress={() => Linking.openURL(`${FIGMA_FILE}?node-id=${node.replace(':', '-')}`)}
             >
-              <Text style={[text.labelStrong, { color: colors.link }]}>{node}</Text>
+              <Text style={[text.link, { color: colors.link }]}>{node}</Text>
             </Pressable>
           ))}
         </View>

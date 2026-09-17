@@ -44,3 +44,7 @@ packages/supabase/supabase/.temp
 # design hand-off drop zone (plugin exports, PNGs); see design-inbox/README.md
 design-inbox/*
 !design-inbox/README.md
+
+# Claude Design hand-off bundles (prototype HTML, fonts, raster exports). Source
+# material, not source code: what the app needs is copied into apps/*/assets.
+claude-designs/

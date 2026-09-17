@@ -2,6 +2,8 @@
 
 Source: https://www.figma.com/design/NyZLmydPFVxa8ehyWWyB68/Untitled (page `0:1`, "Page 1").
 
+> **Visual source has moved.** Auth and onboarding are now built from the Claude Design hand-off (`DittoPay Light.dc.html`), not these frames — see `docs/design-language.md`. The node IDs below stay useful as a map of *what screens exist and how they connect*; do not take colour, type or spacing from them. Screens marked ✅ are implemented; the hand-off is their reference.
+
 Purpose: the list of screens and how they connect, so expo-router routes can be laid out in `apps/mobile/app/`. Visual detail is intentionally left out; implement screens one at a time by opening the Figma node ID listed next to each entry with `get_design_context` / `get_screenshot`.
 
 How this was derived: the Figma layers are auto-named (`Container`, `Section`), so screen names come from the headings, stage labels and annotation chips inside each frame, plus screenshots of the first third of the page. Node IDs point at the top-level frame that holds the screen and all its state variants (dark/light, 375/430 width, error/loading states). A few frames are noted as unconfirmed where the Figma tool limit stopped screenshots.
@@ -21,10 +23,10 @@ Flow: Splash → Welcome → (Create Account → §3) or (Sign In → §2). A si
 
 | Screen | Notes | Figma node |
 | --- | --- | --- |
-| Sign In | email + password; empty, filled, wrong credentials, locked (15 min) | `1:164310` |
-| Reset your password | step 1, enter email, "Send code" | `1:164476` |
-| Enter the reset code | step 2, 6-digit OTP, wrong-code state | `1:164476` |
-| Set a new password | step 3, live tickable rules | `1:164476` |
+| Sign In | email + password; empty, wrong credentials, locked (15 min) | `1:164310` ✅ `app/(auth)/sign-in.tsx` |
+| Reset your password | step 1, enter email, "Send code" | `1:164476` ✅ `app/(auth)/forgot-password/index.tsx` |
+| Enter the reset code | step 2, 6-digit OTP, wrong-code state | `1:164476` ✅ `app/(auth)/forgot-password/code.tsx` |
+| Set a new password | step 3, live tickable rules | `1:164476` ✅ `app/(auth)/forgot-password/new-password.tsx` |
 
 Flow: Sign In → Forgot password? → Reset (email) → Reset code → New password → Sign In.
 
@@ -34,14 +36,15 @@ All in frame `1:165000` unless noted. Labels in Figma read "Stage 1 of 4 · Acco
 
 | Step | Screen | Notes | Figma node |
 | --- | --- | --- | --- |
-| 1 | What kind of merchant are you? | Sole Merchant / Business (coming soon) | `1:165000` ✅ `app/(onboarding)/create-account/merchant-type.tsx` |
-| 2 | Your legal name | first, middle (optional), last, date of birth | `1:165000` |
-| 3 | Your email | email + confirm email, mismatch error | `1:165000` |
-| 4 | Your mobile number | UK mobile validation | `1:165000` |
-| 5 | Verify your mobile | 6-digit OTP; empty, partial, complete, wrong code, timed out, verifying | `1:163382` (state grid), `1:165000` |
-| 6 | Create a password | rules checklist, Show toggle | `1:165000` |
-| 7 | Your home address | country, county, postcode, town, street, house, flat. Figma labels this "Sector 3 of 4" in one place and lists it under stage 1 in another; treat placement as a product decision | `1:164705` |
-| 8–10 | Stage complete | "Fantastic! Your account setup stage is complete. Next we will verify your identity." | `1:165000` |
+| 0 | Country and language | not in the Figma frames; added by the hand-off. UK / English only, the rest listed and disabled | — ✅ `app/(onboarding)/create-account/country-language.tsx` |
+| 1 | What kind of merchant are you? | Sole Merchant / Business. The hand-off makes Business selectable, where Figma greyed it | `1:165000` ✅ `app/(onboarding)/create-account/merchant-type.tsx` |
+| 2 | Your legal name | first, middle (optional), last, date of birth (18+) | `1:165000` ✅ `app/(onboarding)/create-account/legal-name.tsx` |
+| 3 | Your email | email + confirm email, mismatch error | `1:165000` ✅ `app/(onboarding)/create-account/email.tsx` |
+| 4 | Your mobile number | UK mobile validation | `1:165000` ✅ `app/(onboarding)/create-account/mobile.tsx` |
+| 5 | Verify your mobile | 6-digit OTP. **The hand-off verifies the _email_ here**, not the mobile; the route keeps its name | `1:163382` (state grid), `1:165000` ✅ `app/(onboarding)/create-account/verify-mobile.tsx` |
+| 6 | Create a password | rules checklist, Show toggle | `1:165000` ✅ `app/(onboarding)/create-account/password.tsx` |
+| 7 | Your home address | country, county, postcode, town, street, house, flat. Labelled "Sector 3 of 4" while filed under stage 1 — reproduced as drawn; placement is a product decision | `1:164705` ✅ `app/(onboarding)/create-account/home-address.tsx` |
+| 8–10 | Stage complete | "You're all set — next we'll verify your identity." | `1:165000` ✅ `app/(onboarding)/create-account/complete.tsx` |
 
 ## 4. Onboarding stage 2 of 4 — Identity verification (iDenfy)
 
@@ -59,23 +62,31 @@ All in frame `1:175312`.
 
 | Step | Screen | Notes | Figma node |
 | --- | --- | --- | --- |
-| 1 | Please tell us what you do | profession category → sub-profession accordion, live search | `1:165847` |
-| 2 | Your trading name | optional, live "how this looks to a paying customer" preview | `1:165949` |
+| 1 | Please tell us what you do | live search over 68 trades, custom trade when nothing matches | `1:165847` ✅ `app/(onboarding)/business/profession.tsx` |
+| 2 | Your trading name | optional, 34-char cap, live "how this looks to a paying customer" preview | `1:165949` ✅ `app/(onboarding)/business/trading-name.tsx` |
 | 3 | Your home address | see §3 step 7, labelled "Sector 3 of 4 · Business details" | `1:164705` |
-| — | Business Details Success | "Fantastic!" → Connect Bank Account | `1:166066` |
+| — | Business Details Success | "Fantastic!" → Connect Bank Account | `1:166066` ✅ `app/(onboarding)/business/complete.tsx` |
 
 ## 6. Onboarding stage 4 of 4 — Bank verification (11 steps)
 
 | Step | Screen | Notes | Figma node |
 | --- | --- | --- | --- |
-| 1 | Link your bank account | sort code, account number, account holder name | `1:166104` |
-| 2–3 | Bank link result | name mismatch / near-match manual review (reference BL-…); options: Try a different bank account, Talk to support, Finish this later | `1:166357`, `1:166295` (unconfirmed, two 375 screens with no headings, likely verifying/success) |
-| 4 | Review Terms & Conditions | 10 numbered sections, scroll-gated accept, version 2.1 | `1:167327` |
-| 5 | Please authorise your fees | Variable Direct Debit mandate, discount code, VAT; Direct Debit Guarantee sheet; Authorise & Confirm | `1:167327` |
-| 6–10 | Automated customer rewards | choose Points / Visits / Skip for now; programme config; summary | `1:166447` |
-| 11 | You're all set | "A quick 60-second tour before you take your first payment" | `1:167327` |
+| 1 | Link your bank account | sort code, account number, account holder name | `1:166104` ✅ `app/(onboarding)/bank/link.tsx` |
+| 2 | Bank link result | name mismatch, "Attempt N of 3" | `1:166357` ✅ `app/(onboarding)/bank/result.tsx` |
+| 3 | Locked out of automatic linking | three ways on: different account, support (ref BL-48213), finish later | `1:166295` ✅ `app/(onboarding)/bank/help.tsx` |
+| 3 | Automated customer rewards | choose Points / Visits / Skip for now | `1:166447` ✅ `app/(onboarding)/bank/rewards-setup.tsx` |
+| 3 | Set up points | accrual, reward, unlock threshold, per-transaction cap, live summary | `1:166447` ✅ `app/(onboarding)/bank/rewards-points.tsx` |
+| 3 | Set up visits | fixed 1 point per visit, visits needed, reward, cap per day/week/month/year | `1:166447` ✅ `app/(onboarding)/bank/rewards-visits.tsx` |
+| 4 | Review Terms & Conditions | 10 numbered sections, scroll-gated accept, version 2.1 | `1:167327` ✅ `app/(onboarding)/bank/terms.tsx` |
+| 5 | Please authorise account fees | fee table, T&Cs consent, Variable Direct Debit consent | `1:167327` ✅ `app/(onboarding)/bank/fees.tsx` |
+| 6 | Account set up fee | £25 one-off, discount code (DITTO25 waives it), card fields | `1:167327` ✅ `app/(onboarding)/bank/setup-fee.tsx` |
+| 7 | Payment | Stripe hand-off / successful / didn't go through / confirming | `1:167327` ✅ `app/(onboarding)/bank/payment.tsx` |
+| 8 | You're all set | "A quick 60-second tour", share sheet, watch later | `1:167327` ✅ `app/(onboarding)/bank/tour.tsx` |
+| — | Bank account linked | end of onboarding → Home | `1:167327` ✅ `app/(onboarding)/bank/complete.tsx` |
 
-Flow: Bank → Terms → Fees → Rewards setup → All set → §7 Home.
+Flow: Bank → (mismatch → result → help) → Rewards choice → Points / Visits / skip → Terms → Fees → Set-up fee → Payment → Tour → §7 Home.
+
+The step numbers above are the hand-off's own captions, which repeat "step 3 of 11" across four rewards screens. Reproduced as written.
 
 ## 7. Main app (tab bar: Home, Payments, QR, Account)
 

@@ -17,14 +17,14 @@ import { useTheme } from '@/theme';
 
 type Bootstrap = 'loading' | 'ready' | 'failed';
 
-/** A start faster than this is "seen as a flash" (Figma annotation): no bar. */
+/** A start faster than this is seen as a flash, so the bar never appears. */
 const SLOW_AFTER_MS = 300;
-/** Wrap width of the failure copy in the frame (251px text in a 375 screen). */
-const COPY_MAX_WIDTH = 260;
+/** Wrap width of the failure copy in the handoff (250px text in a 375 screen). */
+const COPY_MAX_WIDTH = 250;
 
 /**
- * Splash (Figma 1:164157): fast / slow (indeterminate bar) / failed (Retry).
- * Bootstraps the API + session, then redirects.
+ * Splash: fast / slow (indeterminate bar) / failed (Retry). Bootstraps the API
+ * and session, then redirects.
  * Dev builds accept `?state=slow|failed` to pin a state for verification.
  * TODO: route signed-in users with an unfinished onboarding stage back into (onboarding).
  */
@@ -75,52 +75,49 @@ export default function SplashScreen() {
         styles.container,
         {
           backgroundColor: colors.background,
-          paddingHorizontal: spacing.gutter,
+          paddingHorizontal: spacing.giant + spacing.sm,
           paddingBottom: insets.bottom,
+          gap: spacing.giant,
         },
       ]}
     >
-      <BrandLogo />
+      <BrandLogo variant="stacked" />
 
-      {showBar ? <IndeterminateBar style={{ marginTop: spacing.xxl }} /> : null}
+      {showBar ? <IndeterminateBar /> : null}
 
       {showRetry ? (
-        <>
+        <View style={[styles.failure, { gap: spacing.xxlXxxl }]}>
           <Text
-            style={[
-              text.bodySm,
-              styles.copy,
-              { color: colors.textMuted, marginTop: spacing.xxl, maxWidth: COPY_MAX_WIDTH },
-            ]}
+            style={[text.lead, styles.copy, { color: colors.textMuted, maxWidth: COPY_MAX_WIDTH }]}
           >
             Can't reach DittoPay right now. Check your connection and try again.
           </Text>
           <Button
             label="Retry"
             variant="outline"
-            size="sm"
+            size="xs"
             onPress={bootstrapApp}
-            style={{ alignSelf: 'center', marginTop: spacing.xl }}
+            style={styles.retry}
           />
-        </>
+        </View>
       ) : null}
     </View>
   );
 }
 
-/** Figma: 120×3 track, 48×3 cyan segment. */
-const TRACK_WIDTH = 120;
+/** Handoff: 150×3 track, 46×3 brand segment sweeping past both ends. */
+const TRACK_WIDTH = 150;
 const TRACK_HEIGHT = 3;
-const SEGMENT_WIDTH = 48;
-const SWEEP_MS = 1100;
+const SEGMENT_WIDTH = 46;
+const SWEEP_MS = 1250;
 
-function IndeterminateBar({ style }: { style?: { marginTop: number } }) {
+function IndeterminateBar() {
   const { colors, radius } = useTheme();
   const progress = useSharedValue(0);
 
   useEffect(() => {
     progress.value = withRepeat(
-      withTiming(1, { duration: SWEEP_MS, easing: Easing.inOut(Easing.ease) }),
+      withTiming(1, { duration: SWEEP_MS, easing: Easing.bezier(0.65, 0.05, 0.36, 1) }),
       -1,
       false,
     );
@@ -133,7 +130,7 @@ function IndeterminateBar({ style }: { style?: { marginTop: number } }) {
   return (
     <View
       accessibilityRole="progressbar"
-      style={[styles.track, { backgroundColor: colors.surface, borderRadius: radius.pill }, style]}
+      style={[styles.track, { backgroundColor: colors.border, borderRadius: radius.pill }]}
     >
       <Animated.View
         style={[
@@ -148,7 +145,9 @@ function IndeterminateBar({ style }: { style?: { marginTop: number } }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  failure: { alignItems: 'center', alignSelf: 'stretch' },
   copy: { textAlign: 'center' },
+  retry: { alignSelf: 'center' },
   track: { width: TRACK_WIDTH, height: TRACK_HEIGHT, overflow: 'hidden' },
   segment: { width: SEGMENT_WIDTH, height: TRACK_HEIGHT },
 });

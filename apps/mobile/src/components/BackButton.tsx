@@ -1,16 +1,13 @@
 import { Pressable, StyleSheet, Text } from 'react-native';
 import { useTheme } from '@/theme';
 
-/** Grows the touch target of the 34pt circle to the 44pt minimum. */
-const HIT_SLOP = 5;
-
 export interface BackButtonProps {
   onPress: () => void;
 }
 
 /**
- * Circular back button: surface fill, hairline border, "‹" glyph. The glyph is
- * text in Figma (Sign In 1:164310, onboarding 1:165000), not an icon.
+ * Circular back button: white fill, hairline border, "‹" glyph. The glyph is
+ * text in the handoff, not an icon, so it stays text here.
  */
 export function BackButton({ onPress }: BackButtonProps) {
   const { border, colors, radius, size, text } = useTheme();
@@ -18,7 +15,6 @@ export function BackButton({ onPress }: BackButtonProps) {
   return (
     <Pressable
       onPress={onPress}
-      hitSlop={HIT_SLOP}
       accessibilityRole="button"
       accessibilityLabel="Back"
       style={({ pressed }) => [
@@ -34,11 +30,13 @@ export function BackButton({ onPress }: BackButtonProps) {
         },
       ]}
     >
-      <Text style={[text.body, { color: colors.textSecondary }]}>‹</Text>
+      <Text style={[text.h4Sm, styles.glyph, { color: colors.textPrimary }]}>‹</Text>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   base: { alignItems: 'center', justifyContent: 'center' },
+  // The glyph's own sidebearing sits it right of centre; nudge it back.
+  glyph: { marginBottom: 2 },
 });

@@ -1,13 +1,40 @@
-import { PlaceholderScreen } from '@/components/PlaceholderScreen';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { StageHeader } from '@/components/StageHeader';
+import { VerifyCodeScreen } from '@/components/VerifyCodeScreen';
+import { supabase } from '@/lib/supabase';
 
-export default function CreateAccountVerifyMobileScreen() {
+/**
+ * Stage 1, step 5.
+ *
+ * The route is named for the mobile step it follows, but the handoff verifies
+ * the *email* here — the title reads "Enter the email code" and the code is sent
+ * to the address from step 3. Copy follows the handoff; the file keeps its name
+ * so the route map in docs/figma-screens.md still lines up.
+ */
+export default function VerifyMobileScreen() {
+  const router = useRouter();
+  const { email = '' } = useLocalSearchParams<{ email?: string }>();
+
   return (
-    <PlaceholderScreen
-      title="Verify your mobile"
-      stage="Account creation — step 5 of 10"
-      figma="1:163382, 1:165000"
-      notes="6-digit OTP: empty, partial, complete, wrong code, timed out, verifying. Shared OTP component."
-      actions={[{ label: 'Continue', href: '/(onboarding)/create-account/password' }]}
+    <VerifyCodeScreen
+      header={
+        <StageHeader
+          fills={[0.5, 0, 0, 0]}
+          label="Stage 1 of 4 · Account creation — step 5 of 10"
+        />
+      }
+      codeName="email code"
+      email={email}
+      onVerify={async (code) => {
+        const { error } = await supabase.auth.verifyOtp({ email, token: code, type: 'email' });
+        if (error) return false;
+        router.push('/(onboarding)/create-account/password');
+        return true;
+      }}
+      onResend={() => {
+        supabase.auth.signInWithOtp({ email }).catch(() => undefined);
+      }}
+      onChangeEmail={() => router.back()}
     />
   );
 }

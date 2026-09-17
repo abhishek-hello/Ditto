@@ -1,125 +1,127 @@
 /**
- * Colour palettes, mined from the Figma file (see docs/design-language.md for
- * the node each value came from and which near-duplicate shades were merged).
- * Screens never use hex literals; they read these through useTheme().
+ * Colour palette, taken from the Claude Design handoff
+ * `claude-designs/mobile-app-design-handoff/project/DittoPay Light.dc.html`.
+ * Every value below appears as a literal in that file; screens never repeat a
+ * hex, they read these through useTheme().
+ *
+ * DARK MODE IS NOT SPECIFIED. The handoff is the light theme only, and the app
+ * is pinned to light (`PINNED_SCHEME` in ./index.ts), so `darkColors` is a
+ * placeholder that copies light. Before unpinning, replace every value in it —
+ * rendering this as-is would look like a bug, not a dark theme.
  */
 
 export interface ThemeColors {
-  /** Screen background. */
+  /** Screen background. `#F5F7F9` behind every frame. */
   background: string;
-  /** Cards, inputs, chips, list rows. */
+  /** Cards, inputs, list rows, sheets — white on the screen background. */
   surface: string;
-  /** Raised element on a surface: icon circle inside a row, tab bar, sheet. */
+  /** Kept distinct for sheets and popovers; the handoff draws both white. */
   surfaceRaised: string;
-  /** Hairline border on surfaces, inputs, rows, tab bar. */
+  /** Notes, summary panels, read-only rows, "Attempt 2 of 3" chip. */
+  surfaceMuted: string;
+  /** Total row of a fee table, the share-link row. One step off white. */
+  surfaceSubtle: string;
+  /** Video poster / media placeholder. */
+  surfacePlaceholder: string;
+
+  /** Hairline around inputs, cards and rows. */
   border: string;
-  /** Outline for secondary buttons and the sheet grabber. */
+  /** Outline of a secondary button and an unselected checkbox. */
   borderStrong: string;
+  /** Separator inside a card and above a sticky footer. */
+  divider: string;
 
   textPrimary: string;
-  /** Row labels, sheet body copy. */
+  /** Terms body copy, fee-table labels. */
   textSecondary: string;
-  /** Field labels, captions, section overlines, inactive tab icons. */
+  /** Field labels, helper copy, stage labels, overlines. */
   textMuted: string;
-  /**
-   * Screen footnotes and disclaimers ("Available in the UK"). Identical to
-   * `textMuted` in light; one step dimmer in dark.
-   */
+  /** Screen footnotes. One step lighter again. */
   textFaint: string;
   textPlaceholder: string;
 
-  /** Brand cyan: primary buttons, active tab pill, status chips, switches. */
+  /** Brand cyan: primary buttons, progress fill, selected states, links. */
   primary: string;
-  /** 1px border on a primary button. */
+  /** Border drawn on a primary-filled or primary-outlined control. */
   primaryBorder: string;
-  /** Text and icons on a primary background. */
+  /** Ink on a primary background. */
   onPrimary: string;
-  /** Tinted background for an info icon circle or a highlighted area. */
+  /** 10% brand tint behind a selected card. */
   primarySoft: string;
-  /** Inline links ("Forgot password?", "Show", "Change Email"). */
+  /** Inline links and "Show" / "Hide" toggles. */
   link: string;
-  /** Emphasised cyan numbers on a surface (outstanding £120.00). */
+  /** Highlighted phrase inside a heading, accent numbers. */
   accentText: string;
+
+  /** Near-black fill: the "Apply" and "Pay & Activate" buttons. */
+  inverse: string;
+  onInverse: string;
 
   buttonDisabled: string;
   onButtonDisabled: string;
 
   error: string;
   errorBorder: string;
+  /** Tinted panel behind an error message or an errored field. */
   errorSoft: string;
-  success: string;
-  successSoft: string;
+  /** Ink on `errorSoft` — darker than `error` so it holds contrast. */
+  onErrorSoft: string;
 
   /** Bottom-sheet scrim. */
   scrim: string;
-  /** Drag handle on a sheet and the home indicator. */
+  /** Sheet grabber. */
   handle: string;
+  /** Shadow colour for the brand glow under a primary button. */
+  primaryShadow: string;
+  /** Shadow colour for sheets and sticky footers. */
+  ambientShadow: string;
 }
 
 export const lightColors: ThemeColors = {
-  background: '#ffffff',
-  surface: '#eef2f3',
+  background: '#f5f7f9',
+  surface: '#ffffff',
   surfaceRaised: '#ffffff',
-  border: '#d3dbde',
-  borderStrong: '#afbbc0',
+  surfaceMuted: '#edf0f2',
+  surfaceSubtle: '#f7f9fa',
+  surfacePlaceholder: '#dde2e6',
 
-  textPrimary: '#0a1418',
-  textSecondary: '#33424a',
-  textMuted: '#647178',
-  textFaint: '#647178',
-  textPlaceholder: '#8a979e',
+  border: '#e3e7eb',
+  borderStrong: '#d7dce1',
+  divider: '#ebeef1',
 
-  primary: '#30f1fb',
-  primaryBorder: '#93def5',
-  onPrimary: '#001014',
-  primarySoft: 'rgba(48, 241, 251, 0.16)',
+  textPrimary: '#0a141b',
+  textSecondary: '#41474d',
+  textMuted: '#62676d',
+  textFaint: '#7c838a',
+  textPlaceholder: '#b4b9bf',
+
+  primary: '#03c3fd',
+  primaryBorder: '#03c3fd',
+  onPrimary: '#041017',
+  primarySoft: 'rgba(3, 195, 253, 0.1)',
   link: '#03c3fd',
-  accentText: '#0a737d',
+  accentText: '#03c3fd',
 
-  buttonDisabled: '#dde4e6',
-  onButtonDisabled: '#9aa5aa',
+  inverse: '#0a141b',
+  onInverse: '#ffffff',
 
-  error: '#c22b2b',
-  errorBorder: '#c22b2b',
-  // Provisional: the light-mode error background is not in the Figma file yet.
-  errorSoft: 'rgba(194, 43, 43, 0.08)',
-  success: '#0f7a46',
-  successSoft: '#e3f6eb',
+  buttonDisabled: '#e6e9ec',
+  onButtonDisabled: '#a7adb4',
 
-  scrim: 'rgba(0, 13, 20, 0.72)',
-  handle: '#afbbc0',
+  error: '#c8102e',
+  errorBorder: '#c8102e',
+  errorSoft: '#fdedf0',
+  onErrorSoft: '#a20d25',
+
+  scrim: 'rgba(10, 20, 27, 0.35)',
+  handle: '#dce0e5',
+  primaryShadow: 'rgba(3, 195, 253, 0.28)',
+  ambientShadow: 'rgba(10, 20, 27, 0.18)',
 };
 
-export const darkColors: ThemeColors = {
-  background: '#000d14',
-  surface: '#16232b',
-  surfaceRaised: '#16232b',
-  border: '#2b3a43',
-  borderStrong: '#3d4c56',
-
-  textPrimary: '#ffffff',
-  textSecondary: '#c3cdd2',
-  textMuted: '#8a979e',
-  textFaint: '#647178',
-  // Provisional: no dark-mode placeholder text in the Figma file yet.
-  textPlaceholder: '#647178',
-
-  primary: '#30f1fb',
-  primaryBorder: '#8ff6fb',
-  onPrimary: '#000d14',
-  primarySoft: '#0a3b42',
-  link: '#30f1fb',
-  accentText: '#30f1fb',
-
-  buttonDisabled: '#0c1a22',
-  onButtonDisabled: '#5a676e',
-
-  error: '#ff5a5f',
-  errorBorder: '#ff5a5f',
-  errorSoft: '#2e1214',
-  success: '#46d97a',
-  successSoft: '#0c2a1d',
-
-  scrim: 'rgba(0, 13, 20, 0.72)',
-  handle: '#3d4c56',
-};
+/**
+ * TODO(dark): placeholder — a copy of `lightColors`. The handoff ships no dark
+ * frames, so there is nothing to mine. Unreachable while `PINNED_SCHEME` is
+ * 'light'; fill this in from a dark handoff before clearing the pin.
+ */
+export const darkColors: ThemeColors = { ...lightColors };
