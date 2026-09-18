@@ -5,9 +5,18 @@ import { Button } from '@/components/Button';
 import { CodeInput } from '@/components/CodeInput';
 import { FormScreen } from '@/components/FormScreen';
 import { ScreenHeading } from '@/components/ScreenHeading';
+import { publicEnv } from '@/lib/env';
 import { useTheme } from '@/theme';
 
 const CODE_LENGTH = 6;
+/**
+ * Dev-only: six zeros stand in for a real emailed code, so the verify screens
+ * can be walked without a mailbox. Gated on the same `EXPO_PUBLIC_DEV_BYPASS_AUTH`
+ * flag as the auth gate, which is `__DEV__`-only already.
+ */
+const DEV_CODE = '000000';
+export const devCodeAccepted = (code: string) => publicEnv.devBypassAuth && code === DEV_CODE;
+
 /** The handoff starts the clock at 2:41 and a resend restocks it to 3:00. */
 const INITIAL_SECONDS = 161;
 const RESEND_SECONDS = 180;

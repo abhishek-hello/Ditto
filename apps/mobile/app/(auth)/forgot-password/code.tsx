@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { StageHeader } from '@/components/StageHeader';
-import { VerifyCodeScreen } from '@/components/VerifyCodeScreen';
+import { devCodeAccepted, VerifyCodeScreen } from '@/components/VerifyCodeScreen';
 import { supabase } from '@/lib/supabase';
 
 /** Reset step 2 of 3: the emailed code. */
@@ -14,8 +14,10 @@ export default function ForgotPasswordCodeScreen() {
       codeName="reset code"
       email={email}
       onVerify={async (code) => {
-        const { error } = await supabase.auth.verifyOtp({ email, token: code, type: 'recovery' });
-        if (error) return false;
+        if (!devCodeAccepted(code)) {
+          const { error } = await supabase.auth.verifyOtp({ email, token: code, type: 'recovery' });
+          if (error) return false;
+        }
         router.push({ pathname: '/(auth)/forgot-password/new-password', params: { email } });
         return true;
       }}

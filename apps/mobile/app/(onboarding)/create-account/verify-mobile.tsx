@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { StageHeader } from '@/components/StageHeader';
-import { VerifyCodeScreen } from '@/components/VerifyCodeScreen';
+import { devCodeAccepted, VerifyCodeScreen } from '@/components/VerifyCodeScreen';
 import { supabase } from '@/lib/supabase';
 
 /**
@@ -26,8 +26,10 @@ export default function VerifyMobileScreen() {
       codeName="email code"
       email={email}
       onVerify={async (code) => {
-        const { error } = await supabase.auth.verifyOtp({ email, token: code, type: 'email' });
-        if (error) return false;
+        if (!devCodeAccepted(code)) {
+          const { error } = await supabase.auth.verifyOtp({ email, token: code, type: 'email' });
+          if (error) return false;
+        }
         router.push('/(onboarding)/create-account/password');
         return true;
       }}

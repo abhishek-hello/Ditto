@@ -26,6 +26,7 @@ export default function AccountScreen() {
         { label: 'Fingerprint / Face ID Login', href: '/account/biometrics' },
         { label: 'Theme', href: '/account/theme' },
         { label: 'Delete Account', href: '/account/delete' },
+        { label: 'Log Out', href: '/account/logout' },
       ]}
     />
   );
